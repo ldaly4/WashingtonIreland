@@ -1,0 +1,34 @@
+import React, { useState } from "react";
+import { PageHead, Disclaimer } from "../components/Layout";
+
+const roi = [
+  ["Help to Buy","A tax refund scheme that may help with the deposit on an eligible new build or self-build.","First-time buyers purchasing a qualifying new home.","Check the current Revenue rules, property limits and tax paid.","It does not usually apply to second-hand homes and eligibility is not assessed here."],
+  ["First Home Scheme","A shared-equity route that may bridge part of the gap between your mortgage, deposit and an eligible home.","Buyers whose mortgage and deposit do not cover an eligible new home.","Check participating lenders, property limits, service charges and current terms.","The scheme takes an equity share; understand how redemption and charges work."],
+  ["Local Authority Home Loan","A government-backed mortgage through a local authority.","Some buyers who cannot get sufficient finance from commercial lenders.","Check income limits, lending evidence, property rules and your local authority process.","Approval is not automatic and repayments must still be affordable."],
+  ["Local authority affordable purchase","Homes sold below open-market value, with the local authority taking an equity share.","Households unable to buy at market prices in participating developments.","Check your local authority for open schemes, price caps and application windows.","Supply is limited and each scheme has its own rules."],
+  ["Cost rental","Long-term rental where rent is linked to the cost of providing the home.","Households above social housing limits who struggle with private rents.","Check current income rules and live listings from approved providers.","It is a rental route, not a path to ownership."],
+  ["Social housing support","Local authority or housing-body support based on income and housing need.","Households who meet local income, need and residency criteria.","Apply to the relevant local authority and ask what evidence is needed.","Waiting times and availability vary substantially by area."],
+  ["Vacant Property Refurbishment Grant","A grant that may support bringing a qualifying vacant or derelict home back into use.","People buying or already owning a property that meets vacancy rules.","Check vacancy evidence, eligible works, approval timing and clawback terms.","Do not begin work assuming a grant will be paid; approval and cash flow matter."],
+  ["Buying costs to budget for","Deposit, stamp duty, legal work, survey, valuation, insurance, moving and initial repairs.","Anyone planning a purchase.","Get quotes and keep a buffer separate from the deposit.","The cheapest quote may not cover the same work; compare scope as well as price."],
+  ["Who does what: broker, solicitor, surveyor, estate agent","A broker explores lending; a solicitor handles legal title; a surveyor inspects condition; the estate agent acts for the seller.","Anyone unsure who to ask about finance, law, condition or the sale.","Choose independent, appropriately qualified advisers and ask about fees early.","The estate agent works for the seller, even when they are helpful to buyers."],
+];
+const ni = [
+  ["Co-Ownership","A shared-ownership route: buy a share of a home and pay rent on the remainder.","People who may manage part, but not all, of a home’s purchase price.","Check property limits, affordability, rent, fees and how buying more shares works.","It still involves mortgage, rent and upkeep; compare the full monthly cost."],
+  ["Standard mortgage routes","Loans from banks, building societies and other lenders, usually with a deposit.","Buyers who meet a lender’s income, deposit, credit and property criteria.","Compare actual offers, fees, rates and stress-tested repayments.","An agreement in principle is not a final mortgage offer."],
+  ["Housing Executive and social housing routes","Assessment and access routes for social housing based on housing need.","Households whose circumstances meet current eligibility and allocation rules.","Contact the Housing Executive and provide complete evidence of housing need.","This is not a buying route and waiting times depend on need and area."],
+  ["Housing association options","Social and affordable rental homes provided by registered housing associations.","People whose housing need or circumstances fit an available route.","Check the Housing Executive process and individual association information.","Availability is limited and applications do not guarantee an offer."],
+  ["Buying costs to budget for","Deposit, legal work, survey, valuation, any stamp duty, insurance, moving and repairs.","Anyone planning a purchase.","Check current UK stamp duty rules and obtain local quotes.","Thresholds and first-time-buyer reliefs can change; use the official calculator."],
+  ["Who does what: broker, solicitor, surveyor, estate agent","A broker explores lending; a solicitor handles conveyancing; a surveyor inspects condition; the estate agent acts for the seller.","Anyone unsure who to ask about finance, law, condition or the sale.","Choose independent, qualified advisers and agree fees and scope early.","A lender’s valuation is not a detailed survey for your protection."],
+];
+
+function Accordion({item,open,onClick}) { const [title,what,who,next,caution]=item; return <article className={`accordion ${open?"open":""}`}><button onClick={onClick} aria-expanded={open}><span>{title}</span><b>{open?"−":"+"}</b></button>{open&&<div className="accordion-body"><div><h3>What it is</h3><p>{what}</p></div><div><h3>Who it may be for</h3><p>{who}</p></div><div><h3>What to check next</h3><p>{next}</p></div><aside><strong>One caution</strong><p>{caution}</p></aside></div>}</article> }
+
+export default function AdviceCentrePage() {
+  const [tab,setTab]=useState("roi"),[open,setOpen]=useState(0); const items=tab==="roi"?roi:ni;
+  const switchTab=t=>{setTab(t);setOpen(0)};
+  return <div className="page advice-page"><PageHead eyebrow="Learn the basics" title="Advice centre">Plain-English notes on housing supports and buying routes. These change over time, so always check the official source before applying.</PageHead>
+    <div className="tabs" role="tablist"><button className={tab==="roi"?"active":""} onClick={()=>switchTab("roi")}>Republic of Ireland</button><button className={tab==="ni"?"active":""} onClick={()=>switchTab("ni")}>Northern Ireland</button></div>
+    <div className="advice-layout"><aside className="advice-note"><span>Quick note</span><p>HomePath explains what a route is. It does not decide whether you meet its rules.</p></aside><section>{items.map((x,i)=><Accordion key={x[0]} item={x} open={open===i} onClick={()=>setOpen(open===i?-1:i)}/>)}</section></div>
+    <Disclaimer>Scheme rules, limits and availability change. Check the relevant official source before making a decision or application.</Disclaimer>
+  </div>
+}
