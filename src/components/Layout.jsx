@@ -4,12 +4,14 @@ const nav = [
   ["/", "Home"],
   ["/check-position", "Check position"],
   ["/check-listing", "Check listing"],
+  ["/buying-guide", "Buying a home"],
   ["/advice-centre", "Advice centre"],
 ];
 const mobileLabel = {
   "/": "Home",
   "/check-position": "Position",
   "/check-listing": "Listing",
+  "/buying-guide": "Buying",
   "/advice-centre": "Advice",
 };
 

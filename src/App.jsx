@@ -4,8 +4,9 @@ import HomePage from "./pages/HomePage";
 import CheckPositionPage from "./pages/CheckPositionPage";
 import CheckListingPage from "./pages/CheckListingPage";
 import AdviceCentrePage from "./pages/AdviceCentrePage";
+import BuyingGuidePage from "./pages/BuyingGuidePage";
 
-const routes = {"/":HomePage,"/check-position":CheckPositionPage,"/check-listing":CheckListingPage,"/advice-centre":AdviceCentrePage};
+const routes = {"/":HomePage,"/check-position":CheckPositionPage,"/check-listing":CheckListingPage,"/advice-centre":AdviceCentrePage,"/buying-guide":BuyingGuidePage};
 const currentPath = () => window.location.hash.slice(1) || "/";
 
 export default function App() {
