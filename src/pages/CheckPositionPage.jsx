@@ -56,20 +56,51 @@ export default function CheckPositionPage() {
 
 function Metric({label,value,accent}) { return <div className={`metric ${accent ? "accent":""}`}><span>{label}</span><strong>{value}</strong></div>; }
 function Scenario({title,tag,children}) { return <article className="scenario"><div><span className="scenario-tag">{tag}</span><h3>{title}</h3></div>{children}</article>; }
+const supportReasons = {
+  roi: [
+    ["Help to Buy", "worth checking for eligible new builds or self-builds."],
+    ["First Home Scheme", "could matter if your mortgage and deposit do not meet the price of an eligible home."],
+    ["Local Authority Home Loan", "may be relevant if a commercial mortgage does not cover what you need."],
+    ["Affordable purchase", "worth checking where your local authority has active affordable homes."],
+    ["Cost rental", "could be relevant if buying is not realistic yet and private rent is too high."],
+    ["Social housing support", "may be relevant if your income or housing situation fits local rules."],
+    ["Vacant Property Refurbishment Grant", "worth checking if you are considering a vacant or derelict home."],
+    ["Purchase and renovation routes", "could matter if a cheaper home needs manageable work."],
+  ],
+  ni: [
+    ["Co-Ownership", "may help if buying the whole property is not affordable."],
+    ["Standard mortgage routes", "worth comparing because lender rules and rates vary."],
+    ["Housing Executive / social housing", "could be relevant if your housing need fits current rules."],
+    ["Housing association options", "may be worth checking where local availability exists."],
+    ["Rental support routes", "could be relevant if buying is not realistic yet."],
+  ],
+};
+
+function shortAnswer(data, r, m) {
+  if (!data.target) return `Based on what you entered, your rough starting range is ${m(r.purchaseLow)}–${m(r.purchaseHigh)}. Compare that with real ${data.home} listings in ${data.area || "your preferred area"} and keep supports as something to check, not assume.`;
+  if (r.target <= r.purchaseHigh) return `Your target price sits within this rough no-support range. It may still depend on the property, lender checks, upfront costs and survey findings, but it looks worth exploring with real mortgage advice.`;
+  const gap = r.target - r.purchaseHigh;
+  const routes = r.jurisdiction === "ni" ? "Co-Ownership, a smaller home nearby, or a property needing light work" : "affordable purchase, a smaller home nearby, or a property needing light work";
+  return `A standard purchase at your target price looks difficult without support. It is about ${m(gap)} above the top of this rough range. Your strongest routes to check are ${routes}.`;
+}
 
 function PositionResults({ data, r, edit }) {
   const m = n => money(n, r.jurisdiction);
   const targetGap = Math.max(0, r.target - r.borrowingHigh - r.savings);
   return <div className="page results-page"><button className="text-button" onClick={edit}>← Edit my answers</button>
     <PageHead eyebrow="Your results" title="Your starting point">A numbers-led first look based on what you entered. These figures are rough, not a mortgage offer.</PageHead>
+    <section className="short-answer">
+      <p className="eyebrow">The short answer</p>
+      <p>{shortAnswer(data, r, m)}</p>
+    </section>
     <section className="range-panel">
       <div><p className="eyebrow">Your buying range</p><h2>{m(r.purchaseLow)}–{m(r.purchaseHigh)}</h2><p>Estimated purchase range without housing supports</p></div>
       <div className="metrics"><Metric label={data.buying === "together" ? "Joint income" : "Yearly income"} value={m(r.income)}/><Metric label="Total savings" value={m(r.savings)}/><Metric label="Rough borrowing" value={r.borrowingLow === r.borrowingHigh ? m(r.borrowingHigh) : `${m(r.borrowingLow)}–${m(r.borrowingHigh)}`} accent /></div>
     </section>
     <section className="repayment-panel">
-      <div><p className="eyebrow">Repayment evidence</p><h2>{m(r.demonstratedMonthly)} <small>per month</small></h2><p>Your monthly rent, regular savings and pension contributions combined.</p></div>
+      <div><p className="eyebrow">Money you are already managing each month</p><h2>{m(r.demonstratedMonthly)} <small>per month</small></h2><p>Your monthly rent, regular savings and pension contributions combined.</p></div>
       <div><span>Rent</span><strong>{m(r.monthlyRent)}</strong><span>Monthly savings</span><strong>{m(r.monthlySavings)}</strong><span>Pension</span><strong>{m(r.monthlyPension)}</strong></div>
-      <aside><strong>Illustrative loan supported by that monthly amount: {m(r.repaymentSupportedLoan)}</strong><p>This uses a 30-year term at an illustrative 6% rate. It does not increase the income-based borrowing figure above automatically. A lender will assess take-home pay, other spending, debts, age and its own stress rate.</p></aside>
+      <aside><strong>Illustrative loan supported by that monthly amount: {m(r.repaymentSupportedLoan)}</strong><p>Lenders may look at rent and savings history, but they will assess affordability in their own way. This uses a 30-year term at an illustrative 6% rate and is not a mortgage offer.</p></aside>
     </section>
     <section className="result-section"><div className="section-heading"><span>01</span><div><h2>What this means for the home you want</h2><p>You said you want a {data.home} in {data.area}.</p></div></div>
       <div className="plain-card">{data.target ? <><h3>Target: {m(r.target)}</h3><p>Your target is {m(Math.abs(r.target-r.purchaseHigh))} {r.target > r.purchaseHigh ? "above" : "within"} the top of this rough no-support range. {r.target > r.purchaseHigh && "A larger deposit, another income, a support route, smaller home or nearby area may need to be considered."}</p></> : <p>Compare this range with real {data.home} listings in {data.area} and nearby areas.</p>}<small>HomePath does not yet use live market data, so this is a starting point rather than a valuation.</small></div>
@@ -89,7 +120,7 @@ function PositionResults({ data, r, edit }) {
       </>}</div>
     </section>
     <section className="two-col">
-      <div className="result-section"><div className="section-heading"><span>03</span><div><h2>Supports worth checking</h2></div></div><ul className="tick-list">{(r.jurisdiction==="roi" ? ["Help to Buy","First Home Scheme","Local Authority Home Loan","Affordable purchase","Cost rental","Social housing support","Vacant Property Refurbishment Grant","Purchase and renovation routes"] : ["Co-Ownership","Standard mortgage routes","Housing Executive / social housing","Housing association options","Rental support routes"]).map(x=><li key={x}>{x}<span>→</span></li>)}</ul></div>
+      <div className="result-section"><div className="section-heading"><span>03</span><div><h2>Supports worth checking</h2></div></div><ul className="support-list">{supportReasons[r.jurisdiction].map(([name,reason])=><li key={name}><strong>{name}</strong><span>{reason}</span></li>)}</ul></div>
       <div className="result-section"><div className="section-heading"><span>04</span><div><h2>What to search for</h2></div></div><ul className="search-list"><li>{data.home} homes within {m(r.purchaseHigh)}</li><li>Nearby towns with lower asking prices</li><li>{r.jurisdiction==="roi" ? "Eligible new builds if support schemes may apply" : "Homes where a Co-Ownership share may work"}</li><li>Homes needing {data.renovation === "none" ? "little or no" : "manageable"} work, with a separate buffer</li></ul></div>
     </section>
     <section className="next-steps"><p className="eyebrow">Your next three steps</p><ol><li><span>1</span><p>Check the official scheme pages or local housing route for your area.</p></li><li><span>2</span><p>Speak to a broker, lender, local authority, Housing Executive route or housing adviser about your actual position.</p></li><li><span>3</span><p>Pick three real listings and use Check a listing to compare costs and questions.</p></li></ol></section>

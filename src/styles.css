@@ -28,3 +28,40 @@
 .repayment-panel aside strong{color:var(--green)}
 .repayment-panel aside p{font-size:13px;line-height:1.5;color:#5d675f;margin:6px 0 0}
 @media(max-width:760px){.repayment-panel{grid-template-columns:1fr;margin-top:-20px;padding:22px 18px}.repayment-panel aside{grid-column:auto}}
+
+/* Product refinements */
+.hub-panel{background:var(--navy);border-radius:30px;min-height:340px;overflow:hidden}
+.hub-panel:before{content:"";position:absolute;inset:22px;border:1px solid #ffffff20;border-radius:22px}
+.hub-panel .mark{background:transparent}
+.hub-panel .logo-house,.hub-panel .logo-door,.hub-panel .logo-knob{stroke:#fff}
+.hub-panel .logo-path{fill:var(--pale)}
+.hub-panel .path-line{border-color:#9bc892;opacity:.75}
+.hub-panel>span{color:#dceccf;right:28px;bottom:24px;letter-spacing:.08em;text-transform:uppercase}
+.action-card{min-height:250px;border-top:0;border-left:5px solid var(--pale)}
+.action-card:hover{border-left-color:#7dac73;border-top-color:var(--pale)}
+.action-card h3{margin:0 0 12px}
+.short-answer{border:1px solid #b7d6a5;background:#f3f8ef;padding:24px 26px;margin:-12px 0 26px}
+.short-answer .eyebrow{margin-bottom:10px}
+.short-answer p:last-child{font:700 clamp(19px,3vw,27px)/1.35 Manrope,sans-serif;color:var(--navy);letter-spacing:-.025em;margin:0}
+.range-panel{margin-bottom:32px}
+.repayment-panel{max-width:880px;margin:0 0 58px auto;padding:22px;grid-template-columns:1fr .75fr}
+.repayment-panel h2{font-size:28px}
+.repayment-panel .eyebrow{font-size:10px!important}
+.support-list{list-style:none;padding:0;margin:0;border-top:1px solid var(--line)}
+.support-list li{padding:14px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(130px,.75fr) 1.4fr;gap:12px;line-height:1.45}
+.support-list strong{color:var(--navy)}
+.support-list span{color:#5f6877}
+.official-link{width:max-content;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--green);color:var(--green);text-decoration:none;font-weight:800;padding:10px 13px;border-radius:4px;font-size:13px}
+.official-link:after{content:"→"}
+.accordion-body aside{grid-column:auto}
+
+@media(max-width:760px){
+  .bottom-nav a{font-size:12px;font-weight:700;padding:15px 2px 14px}
+  .hero{padding-top:40px}
+  .action-card{min-height:205px}
+  .short-answer{padding:20px;margin-bottom:22px}
+  .short-answer p:last-child{font-size:20px}
+  .repayment-panel{max-width:none;margin-bottom:45px;grid-template-columns:1fr}
+  .support-list li{grid-template-columns:1fr;gap:4px}
+  .official-link{width:100%;justify-content:center}
+}

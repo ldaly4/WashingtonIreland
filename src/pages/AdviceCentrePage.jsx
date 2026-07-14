@@ -21,12 +21,12 @@ const ni = [
   ["Who does what: broker, solicitor, surveyor, estate agent","A broker explores lending; a solicitor handles conveyancing; a surveyor inspects condition; the estate agent acts for the seller.","Anyone unsure who to ask about finance, law, condition or the sale.","Choose independent, qualified advisers and agree fees and scope early.","A lender’s valuation is not a detailed survey for your protection."],
 ];
 
-function Accordion({item,open,onClick}) { const [title,what,who,next,caution]=item; return <article className={`accordion ${open?"open":""}`}><button onClick={onClick} aria-expanded={open}><span>{title}</span><b>{open?"−":"+"}</b></button>{open&&<div className="accordion-body"><div><h3>What it is</h3><p>{what}</p></div><div><h3>Who it may be for</h3><p>{who}</p></div><div><h3>What to check next</h3><p>{next}</p></div><aside><strong>One caution</strong><p>{caution}</p></aside></div>}</article> }
+function Accordion({item,open,onClick}) { const [title,what,who,next,caution]=item; return <article className={`accordion ${open?"open":""}`}><button onClick={onClick} aria-expanded={open}><span>{title}</span><b>{open?"−":"+"}</b></button>{open&&<div className="accordion-body"><div><h3>What it is</h3><p>{what}</p></div><div><h3>Who it may be for</h3><p>{who}</p></div><div><h3>What to check next</h3><p>{next}</p></div><aside><strong>One caution</strong><p>{caution}</p></aside><a className="official-link" href="#" onClick={e=>e.preventDefault()}>Check official source</a></div>}</article> }
 
 export default function AdviceCentrePage() {
   const [tab,setTab]=useState("roi"),[open,setOpen]=useState(0); const items=tab==="roi"?roi:ni;
   const switchTab=t=>{setTab(t);setOpen(0)};
-  return <div className="page advice-page"><PageHead eyebrow="Learn the basics" title="Advice centre">Plain-English notes on housing supports and buying routes. These change over time, so always check the official source before applying.</PageHead>
+  return <div className="page advice-page"><PageHead eyebrow="Practical library" title="Advice centre">Short notes on housing supports and buying routes. Rules change, so treat this as a pointer and check the official source before applying.</PageHead>
     <div className="tabs" role="tablist"><button className={tab==="roi"?"active":""} onClick={()=>switchTab("roi")}>Republic of Ireland</button><button className={tab==="ni"?"active":""} onClick={()=>switchTab("ni")}>Northern Ireland</button></div>
     <div className="advice-layout"><aside className="advice-note"><span>Quick note</span><p>HomePath explains what a route is. It does not decide whether you meet its rules.</p></aside><section>{items.map((x,i)=><Accordion key={x[0]} item={x} open={open===i} onClick={()=>setOpen(open===i?-1:i)}/>)}</section></div>
     <Disclaimer>Scheme rules, limits and availability change. Check the relevant official source before making a decision or application.</Disclaimer>

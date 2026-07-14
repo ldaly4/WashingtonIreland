@@ -6,6 +6,12 @@ const nav = [
   ["/check-listing", "Check listing"],
   ["/advice-centre", "Advice centre"],
 ];
+const mobileLabel = {
+  "/": "Home",
+  "/check-position": "Position",
+  "/check-listing": "Listing",
+  "/advice-centre": "Advice",
+};
 
 export function HouseMark() {
   return <span className="mark" aria-hidden="true">
@@ -29,8 +35,8 @@ export default function Layout({ path, navigate, children }) {
     </header>
     <main>{children}</main>
     <nav className="bottom-nav" aria-label="Main navigation">
-      {nav.map(([href, label], i) => <a key={href} className={path === href ? "active" : ""} href={`#${href}`} onClick={e => go(e, href)}>
-        <span aria-hidden="true">{["⌂","€","⌕","≡"][i]}</span>{label}
+      {nav.map(([href, label]) => <a key={href} className={path === href ? "active" : ""} href={`#${href}`} onClick={e => go(e, href)}>
+        {mobileLabel[href] || label}
       </a>)}
     </nav>
   </div>;
