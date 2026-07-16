@@ -5,8 +5,12 @@ import CheckPositionPage from "./pages/CheckPositionPage";
 import CheckListingPage from "./pages/CheckListingPage";
 import AdviceCentrePage from "./pages/AdviceCentrePage";
 import BuyingGuidePage from "./pages/BuyingGuidePage";
+import SavingsPlanPage from "./pages/SavingsPlanPage";
+import HousingPulsePage from "./pages/HousingPulsePage";
+import LearnPage from "./pages/LearnPage";
+import PrivacyPage from "./pages/PrivacyPage";
 
-const routes = {"/":HomePage,"/check-position":CheckPositionPage,"/check-listing":CheckListingPage,"/advice-centre":AdviceCentrePage,"/buying-guide":BuyingGuidePage};
+const routes = {"/":HomePage,"/check-position":CheckPositionPage,"/check-listing":CheckListingPage,"/advice-centre":AdviceCentrePage,"/buying-guide":BuyingGuidePage,"/savings-plan":SavingsPlanPage,"/housing-pulse":HousingPulsePage,"/learn":LearnPage,"/privacy":PrivacyPage};
 const currentPath = () => window.location.hash.slice(1) || "/";
 
 export default function App() {

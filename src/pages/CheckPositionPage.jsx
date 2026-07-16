@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { PageHead, Disclaimer } from "../components/Layout";
 import { calculatePosition, money } from "../lib/calculations";
+import { saveHomePath, researchInviteState, setResearchInvite } from "../lib/storage";
 
 const initial = { jurisdiction:"roi", area:"", buying:"alone", income:"", monthlySavings:"", monthlyRent:"", monthlyPension:"", savings:"", firstTime:"yes", housing:"renting", home:"3-bed", renovation:"none", target:"", research:false };
 const savedCheck = () => {
@@ -21,6 +22,7 @@ export default function CheckPositionPage() {
     e.preventDefault();
     const next = calculatePosition(data);
     sessionStorage.setItem("homepath-position", JSON.stringify({data, showResult:true}));
+    saveHomePath(data, next);
     setResult(next);
     window.scrollTo({top:0, behavior:"smooth"});
   };
@@ -87,12 +89,28 @@ function shortAnswer(data, r, m) {
 function PositionResults({ data, r, edit }) {
   const m = n => money(n, r.jurisdiction);
   const targetGap = Math.max(0, r.target - r.borrowingHigh - r.savings);
+  const upfront = r.jurisdiction === "roi" ? r.deposit + r.costs : Math.min(r.fiveDeposit + r.costs, r.tenDeposit + r.costs);
+  const savingsGap = Math.max(0, upfront - r.savings);
+  const months = r.monthlySavings > 0 ? Math.ceil(savingsGap / r.monthlySavings) : Infinity;
+  const progress = upfront ? Math.min(100, r.savings / upfront * 100) : 0;
+  const nextStep = savingsGap > 0 ? "build the deposit and buying-cost fund further" : r.target > r.purchaseHigh ? "check a support route or compare cheaper property types" : "speak to a mortgage broker or lender";
+  const invite = researchInviteState();
   return <div className="page results-page"><button className="text-button" onClick={edit}>← Edit my answers</button>
-    <PageHead eyebrow="Your results" title="Your starting point">A numbers-led first look based on what you entered. These figures are rough, not a mortgage offer.</PageHead>
+    <PageHead eyebrow="Your HomePath" title="Your HomePath">A visual first look based on what you entered. These figures are rough, not a mortgage offer.</PageHead>
+    <section className="homepath-dashboard">
+      <DashCard label="Estimated buying range" value={`${m(r.purchaseLow)}–${m(r.purchaseHigh)}`}/>
+      <DashCard label="Target property price" value={m(r.target)}/>
+      <DashCard label="Current savings" value={m(r.savings)}/>
+      <DashCard label="Estimated upfront cash needed" value={m(upfront)}/>
+      <DashCard label="Estimated savings gap" value={m(savingsGap)}/>
+      <DashCard label="Approximate time to target" value={Number.isFinite(months)?`${months} months`:"Add savings rate"}/>
+    </section>
+    <div className="progress-track labelled"><span style={{width:`${progress}%`}}/><small>{Math.round(progress)}% of estimated upfront cash target</small></div>
     <section className="short-answer">
       <p className="eyebrow">The short answer</p>
       <p>{shortAnswer(data, r, m)}</p>
     </section>
+    <section className="next-realistic"><p className="eyebrow">Your next realistic step</p><h2>{nextStep}.</h2><p>Based on your target of a {data.home} near {data.area || "your chosen area"}, this is the step most likely to give you clearer information.</p></section>
     <section className="range-panel">
       <div><p className="eyebrow">Your buying range</p><h2>{m(r.purchaseLow)}–{m(r.purchaseHigh)}</h2><p>Estimated purchase range without housing supports</p></div>
       <div className="metrics"><Metric label={data.buying === "together" ? "Joint income" : "Yearly income"} value={m(r.income)}/><Metric label="Total savings" value={m(r.savings)}/><Metric label="Rough borrowing" value={r.borrowingLow === r.borrowingHigh ? m(r.borrowingHigh) : `${m(r.borrowingLow)}–${m(r.borrowingHigh)}`} accent /></div>
@@ -124,6 +142,9 @@ function PositionResults({ data, r, edit }) {
       <div className="result-section"><div className="section-heading"><span>04</span><div><h2>What to search for</h2></div></div><ul className="search-list"><li>{data.home} homes within {m(r.purchaseHigh)}</li><li>Nearby towns with lower asking prices</li><li>{r.jurisdiction==="roi" ? "Eligible new builds if support schemes may apply" : "Homes where a Co-Ownership share may work"}</li><li>Homes needing {data.renovation === "none" ? "little or no" : "manageable"} work, with a separate buffer</li></ul></div>
     </section>
     <section className="next-steps"><p className="eyebrow">Your next three steps</p><ol><li><span>1</span><p>Check the official scheme pages or local housing route for your area.</p></li><li><span>2</span><p>Speak to a broker, lender, local authority, Housing Executive route or housing adviser about your actual position.</p></li><li><span>3</span><p>Pick three real listings and use Check a listing to compare costs and questions.</p></li></ol></section>
+    {!invite.dismissed && <section className="research-invite"><h2>Help us understand young people’s experience of housing.</h2><p>We are collecting anonymous views on housing knowledge, confidence and barriers. This is optional and does not affect your results.</p><button>Share my view</button><button onClick={()=>setResearchInvite({dismissed:true})}>Maybe later</button><button onClick={()=>setResearchInvite({dismissed:true})}>No thanks</button></section>}
     <Disclaimer>This is a starting point, not a decision. It is not a mortgage offer and does not replace advice from a broker, lender, solicitor, surveyor, local authority, Housing Executive route or housing adviser.</Disclaimer>
   </div>;
 }
+
+function DashCard({label,value}) { return <article className="number-card"><span>{label}</span><strong>{value}</strong></article> }

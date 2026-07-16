@@ -104,6 +104,8 @@ function StepCard({ step, index, open, toggle, jurisdiction, navigate }) {
       <section><h3>Who to contact</h3><p>{who}</p>{jurisdiction==="roi" && index===4 && <button className="guide-inline-button" onClick={()=>navigate("/check-listing")}>Check a property listing</button>}</section>
       <section><h3>Money needed now</h3><p>{moneyNow}</p></section>
       <section><h3>Before you move on</h3><p>{before}</p></section>
+      <section><h3>Documents and delays</h3><p>Delays often come from missing documents, survey issues, legal title questions, lender conditions, planning queries or slow replies between parties.</p></section>
+      <section><h3>Related lesson</h3><p>Want the short version first? Take a 5-minute lesson in Learn.</p><button className="guide-inline-button" onClick={()=>navigate("/learn")}>Open Learn</button></section>
     </div>}
   </article>
 }

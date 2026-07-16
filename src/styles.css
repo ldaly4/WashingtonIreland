@@ -113,16 +113,82 @@
 .official-sources a{border:1px solid var(--line);padding:15px 16px;text-decoration:none;color:var(--navy);font-weight:800;display:flex;justify-content:space-between;gap:12px}
 .official-sources a:after{content:"↗";color:var(--green)}
 
+/* HomePath evolution */
+.hero-copy.compact{margin-top:-18px}
+.home-personal,.confidence-card{border:1px solid #c5ddb6;background:#f3f8ef;padding:15px 16px;margin:18px 0;display:grid;gap:6px;color:#334235}
+.confidence-card label{display:grid;gap:8px;font-weight:800;color:var(--navy)}
+.confidence-card select{padding:10px;border:1px solid #b8c9b0;background:#fff}
+.secondary-action{margin-top:24px;border:1px solid #9bc892;background:transparent;color:#fff;padding:12px 16px;font-weight:800}
+.bottom-nav button{border:0;background:#fff;color:#707987;font-weight:700}
+.bottom-nav button.active{color:var(--green);background:#f3f8ef}
+.more-menu{position:fixed;right:12px;bottom:78px;z-index:30;background:#fff;border:1px solid var(--line);box-shadow:0 18px 40px #0d1b3d25;display:grid;min-width:190px}
+.more-menu a,.more-menu button{border:0;background:#fff;text-align:left;text-decoration:none;padding:14px 16px;color:var(--navy);font-weight:800}
+.ask-fab{position:fixed;right:18px;bottom:18px;z-index:22;border:0;background:var(--green);color:#fff;padding:13px 16px;border-radius:999px;font-weight:800;box-shadow:0 12px 25px #0d1b3d25}
+.drawer-backdrop{position:fixed;inset:0;background:#0d1b3d66;z-index:50;display:flex;justify-content:flex-end}
+.ask-drawer{width:min(420px,100%);background:#fff;padding:26px;overflow:auto;box-shadow:-20px 0 50px #0d1b3d33}
+.ask-drawer h2{font:800 30px Manrope,sans-serif;color:var(--navy);margin:0 0 8px}
+.ask-drawer select{width:100%;padding:12px;border:1px solid var(--line);margin:18px 0}
+.drawer-close{float:right;border:0;background:#edf5e8;color:var(--green);padding:9px 12px;font-weight:800}
+.ask-answer{background:#f3f8ef;border-left:4px solid var(--green);padding:16px;line-height:1.55}
+.ask-answer small{display:block;margin-top:10px;color:#62705f}
+.homepath-dashboard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
+.number-card{border:1px solid var(--line);padding:18px;background:#fff}
+.number-card span{display:block;color:#657080;font-size:12px;margin-bottom:8px}
+.number-card strong{font:800 24px Manrope,sans-serif;color:var(--navy);letter-spacing:-.03em}
+.progress-track{height:12px;background:#edf5e8;border-radius:99px;overflow:hidden;margin:12px 0 28px}
+.progress-track span{display:block;height:100%;background:var(--green)}
+.progress-track.labelled{height:auto;background:transparent;border-radius:0}
+.progress-track.labelled span{height:12px;border-radius:99px;background:var(--green)}
+.progress-track.labelled small{display:block;margin-top:7px;color:#657080}
+.next-realistic{border:1px solid #b7d6a5;background:#f3f8ef;padding:22px;margin:0 0 36px}
+.next-realistic h2{font:800 26px Manrope,sans-serif;color:var(--navy);margin:0 0 8px}
+.research-invite{border:1px solid var(--line);border-left:5px solid var(--green);padding:22px;margin:32px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.research-invite h2{font:800 20px Manrope,sans-serif;color:var(--navy);margin:0;width:100%}
+.research-invite p{width:100%;margin:0;color:#5f6877}
+.research-invite button{border:1px solid var(--green);background:#fff;color:var(--green);padding:10px 13px;font-weight:800}
+.research-invite button:first-of-type{background:var(--green);color:#fff}
+.planner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.what-if,.pulse-hero,.learn-progress{border:1px solid var(--line);padding:24px;margin:28px 0;display:grid;gap:14px;background:#fff}
+.what-if h2,.pulse-hero h2{font:800 28px Manrope,sans-serif;color:var(--navy);margin:0}
+.what-if label{display:grid;gap:8px;font-weight:800;color:var(--navy)}
+.what-if input,.what-if select{padding:11px;border:1px solid var(--line)}
+.pulse-hero{background:var(--navy);color:#fff}
+.pulse-hero span{color:#9bc892;font-weight:800;text-transform:uppercase;font-size:12px;letter-spacing:.1em}
+.pulse-hero button{width:max-content;border:0;background:var(--green);color:#fff;padding:13px 16px;font-weight:800}
+.pulse-hero button:disabled{background:#63708a;cursor:not-allowed}
+.stat-grid,.themes-grid,.older-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.stat-grid article,.themes-grid article,.older-grid article{border:1px solid var(--line);padding:18px}
+.skeleton-bar{height:70px;background:linear-gradient(90deg,#edf5e8,#f8faf7);border-radius:4px;margin-bottom:14px}
+.category-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.category-row span{border:1px solid var(--line);padding:10px 12px;font-weight:800;color:var(--navy)}
+.category-row small{display:block;color:var(--green)}
+.module-list{display:grid;gap:12px}
+.module-card{border:1px solid var(--line)}
+.module-card>button{width:100%;border:0;background:#fff;display:grid;grid-template-columns:32px 1fr auto;gap:12px;text-align:left;padding:16px;font-weight:800;color:var(--navy)}
+.module-card>div{padding:0 18px 18px}
+.scenario-card{background:#edf5e8;padding:16px;margin:14px 0}
+.answer{border-left:4px solid var(--green);padding-left:12px;color:#334235}
+.mode-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.mode-tabs button{border:1px solid var(--line);background:#fff;padding:12px;font-weight:800;color:var(--navy)}
+.mode-tabs button.active{background:var(--green);color:#fff;border-color:var(--green)}
+.url-warning{margin-bottom:20px}
+.form-error{background:#faf5f3;border-left:4px solid #a44c38;padding:12px;color:#743628}
+
 @media(max-width:900px){
   .desktop-nav a{padding:10px 8px;font-size:13px}
   .guide-summary,.guide-step-body{grid-template-columns:1fr}
   .guide-summary ul,.guide-calc-fields,.people-grid,.official-sources>div:last-child{grid-template-columns:1fr}
   .money-timeline>div:last-child{grid-template-columns:1fr 1fr}
+  .homepath-dashboard,.planner-grid,.stat-grid,.themes-grid,.older-grid{grid-template-columns:1fr 1fr}
 }
 
 @media(max-width:760px){
   .bottom-nav{grid-template-columns:repeat(5,1fr)}
   .bottom-nav a{font-size:11px}
+  .ask-fab{display:none}
+  .homepath-dashboard,.planner-grid,.stat-grid,.themes-grid,.older-grid,.mode-tabs{grid-template-columns:1fr}
+  .number-card strong{font-size:21px}
+  .research-invite{display:grid}
   .segmented-toggle{width:100%;margin-top:-8px}
   .segmented-toggle button{padding:12px 8px;font-size:13px}
   .guide-summary{padding:22px 18px}
