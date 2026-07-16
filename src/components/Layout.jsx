@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { askHomePath } from "../services/askHomePath";
 
 const nav = [
   ["/", "Home"],
@@ -68,10 +69,24 @@ function AskDrawer({ close, navigate }) {
     "What is a sinking fund?":"For apartments, a sinking fund is money set aside by the management company for larger future repairs or works.",
   };
   const [q,setQ]=useState(Object.keys(answers)[0]);
+  const [answer,setAnswer]=useState("");
+  const [loading,setLoading]=useState(false);
+  const ask = async () => {
+    setLoading(true);
+    try {
+      const result = await askHomePath(q);
+      setAnswer(result.answer || answers[q]);
+    } catch {
+      setAnswer(answers[q]);
+    } finally {
+      setLoading(false);
+    }
+  };
   return <div className="drawer-backdrop" role="dialog" aria-modal="true" aria-label="Ask HomePath">
     <aside className="ask-drawer"><button className="drawer-close" onClick={close}>Close</button><p className="eyebrow">Ask HomePath</p><h2>Quick housing answers</h2><p>General guidance only. HomePath will not invent current scheme rules or make eligibility decisions.</p>
-      <select value={q} onChange={e=>setQ(e.target.value)}>{Object.keys(answers).map(x=><option key={x}>{x}</option>)}</select>
-      <div className="ask-answer">{answers[q]} <small>Confirm anything important with a broker, lender, solicitor, surveyor or official provider.</small></div>
+      <select value={q} onChange={e=>{setQ(e.target.value);setAnswer("")}}>{Object.keys(answers).map(x=><option key={x}>{x}</option>)}</select>
+      <button className="guide-inline-button" onClick={ask} disabled={loading}>{loading ? "Asking…" : "Ask"}</button>
+      <div className="ask-answer">{answer || answers[q]} <small>Confirm anything important with a broker, lender, solicitor, surveyor or official provider.</small></div>
       <button className="guide-inline-button" onClick={()=>{close();navigate("/learn")}}>Open related lessons</button>
     </aside>
   </div>

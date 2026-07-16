@@ -1,0 +1,46 @@
+const allowedOrigins = [
+  "https://ldaly4.github.io",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+];
+
+function setCors(req, res) {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+
+export default async function handler(req, res) {
+  setCors(req, res);
+  if (req.method === "OPTIONS") return res.status(204).end();
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (!process.env.OPENAI_API_KEY) return res.status(500).json({ error: "OPENAI_API_KEY is not configured on the server." });
+
+  const question = String(req.body?.question || "").slice(0, 1200);
+  if (!question.trim()) return res.status(400).json({ error: "Ask a question first." });
+
+  const response = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: process.env.OPENAI_MODEL || "gpt-5.2",
+      input: [
+        {
+          role: "system",
+          content: "You are Ask HomePath. Use British English. Give concise general housing guidance for first-time buyers in the Republic of Ireland and Northern Ireland. State uncertainty, never decide eligibility, never replace a broker, lender, solicitor, surveyor, tax authority or official scheme provider, and tell users when to check official sources.",
+        },
+        { role: "user", content: question },
+      ],
+    }),
+  });
+
+  const payload = await response.json();
+  if (!response.ok) return res.status(response.status).json({ error: payload.error?.message || "OpenAI request failed" });
+
+  return res.status(200).json({ answer: payload.output_text || "I could not produce an answer. Please try again." });
+}

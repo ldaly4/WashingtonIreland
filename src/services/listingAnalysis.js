@@ -1,4 +1,5 @@
-export const LISTING_ANALYSIS_API_URL = "";
+export const LISTING_ANALYSIS_API_URL =
+  globalThis.HOMEPATH_CONFIG?.LISTING_ANALYSIS_API_URL || "";
 
 export async function analyseListingWithAdapter(data, fallback) {
   if (data.mode === "url") {
