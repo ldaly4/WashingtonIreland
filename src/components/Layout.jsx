@@ -3,6 +3,7 @@ import { askHomePath } from "../services/askHomePath";
 
 const nav = [
   ["/", "Home"],
+  ["/learn", "Learning Centre"],
   ["/check-position", "My position"],
   ["/check-listing", "Check a house"],
   ["/buying-guide", "Buying explained"],
@@ -10,6 +11,7 @@ const nav = [
 ];
 const mobileLabel = {
   "/": "Home",
+  "/learn": "Learn",
   "/check-position": "Position",
   "/check-listing": "House",
   "/buying-guide": "Explained",
@@ -37,6 +39,7 @@ export default function Layout({ path, navigate, children }) {
   return <div className="app-shell">
     <header className="header">
       <a className="brand" href="#/" onClick={e => go(e, "/")}><HouseMark /><span><b>Home</b><i>Path</i></span></a>
+      <a className={`header-learn ${path === "/learn" ? "active" : ""}`} href="#/learn" onClick={e => go(e, "/learn")}>Learning Centre</a>
       <nav className="desktop-nav" aria-label="Main navigation">
         {nav.map(([href, label]) => <a key={href} className={path === href ? "active" : ""} href={`#${href}`} onClick={e => go(e, href)}>{label}</a>)}
       </nav>
@@ -49,7 +52,7 @@ export default function Layout({ path, navigate, children }) {
       <button className={more ? "active" : ""} onClick={()=>setMore(!more)}>More</button>
     </nav>
     {more && <div className="more-menu">
-      {[["/savings-plan","Savings plan"],["/learn","Buying basics modules"],["/glossary","Glossary"],["/housing-pulse","Housing Pulse"],["/advice-centre","Advice centre"],["/privacy","Privacy"]].map(([href,label])=><a key={href} href={`#${href}`} onClick={e=>{setMore(false);go(e,href)}}>{label}</a>)}
+      {[["/savings-plan","Savings plan"],["/glossary","Glossary"],["/housing-pulse","Housing Pulse"],["/advice-centre","Advice centre"],["/privacy","Privacy"]].map(([href,label])=><a key={href} href={`#${href}`} onClick={e=>{setMore(false);go(e,href)}}>{label}</a>)}
       <button onClick={()=>{setMore(false);setAsk(true)}}>Ask HomePath</button>
     </div>}
     <button className="ask-fab" onClick={()=>setAsk(true)}>Ask HomePath</button>
