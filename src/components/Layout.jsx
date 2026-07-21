@@ -52,7 +52,7 @@ export default function Layout({ path, navigate, children }) {
       <button className={more ? "active" : ""} onClick={()=>setMore(!more)}>More</button>
     </nav>
     {more && <div className="more-menu">
-      {[["/savings-plan","Savings plan"],["/glossary","Glossary"],["/housing-pulse","Housing Pulse"],["/advice-centre","Advice centre"],["/privacy","Privacy"]].map(([href,label])=><a key={href} href={`#${href}`} onClick={e=>{setMore(false);go(e,href)}}>{label}</a>)}
+      {[["/buying-guide","Buying guide"],["/savings-plan","Savings plan"],["/glossary","Glossary"],["/housing-pulse","Housing Pulse"],["/advice-centre","Advice centre"],["/privacy","Privacy"]].map(([href,label])=><a key={href} href={`#${href}`} onClick={e=>{setMore(false);go(e,href)}}>{label}</a>)}
       <button onClick={()=>{setMore(false);setAsk(true)}}>Ask HomePath</button>
     </div>}
     <button className="ask-fab" onClick={()=>setAsk(true)}>Ask HomePath</button>

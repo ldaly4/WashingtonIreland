@@ -11,7 +11,18 @@ import LearnPage from "./pages/LearnPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import GlossaryPage from "./pages/GlossaryPage";
 
-const routes = {"/":HomePage,"/check-position":CheckPositionPage,"/check-listing":CheckListingPage,"/advice-centre":AdviceCentrePage,"/buying-guide":BuyingGuidePage,"/savings-plan":SavingsPlanPage,"/housing-pulse":HousingPulsePage,"/learn":LearnPage,"/privacy":PrivacyPage,"/glossary":GlossaryPage};
+const routes = {
+  "/": HomePage,
+  "/check-position": CheckPositionPage,
+  "/check-listing": CheckListingPage,
+  "/advice-centre": AdviceCentrePage,
+  "/buying-guide": BuyingGuidePage,
+  "/glossary": GlossaryPage,
+  "/housing-pulse": HousingPulsePage,
+  "/learn": LearnPage,
+  "/privacy": PrivacyPage,
+  "/savings-plan": SavingsPlanPage,
+};
 const currentPath = () => window.location.hash.slice(1) || "/";
 
 export default function App() {
