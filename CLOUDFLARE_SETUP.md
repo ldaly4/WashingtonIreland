@@ -39,7 +39,7 @@ Project name: homepath-ai
 Production branch: main
 Build command: npm run build
 Build output directory: dist
-Root directory: homepath-v2
+Root directory: leave blank
 ```
 
 8. Deploy once.
