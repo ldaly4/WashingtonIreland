@@ -12,6 +12,14 @@ function setCors(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
+function responseText(payload) {
+  if (payload.output_text) return payload.output_text;
+  const content = payload.output?.flatMap(item => item.content || []) || [];
+  const text = content.find(part => part.type === "output_text" || part.type === "text")?.text;
+  if (text) return text;
+  return "";
+}
+
 export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === "OPTIONS") return res.status(204).end();
@@ -42,5 +50,5 @@ export default async function handler(req, res) {
   const payload = await response.json();
   if (!response.ok) return res.status(response.status).json({ error: payload.error?.message || "OpenAI request failed" });
 
-  return res.status(200).json({ answer: payload.output_text || "I could not produce an answer. Please try again." });
+  return res.status(200).json({ answer: responseText(payload) || "I could not produce an answer. Please try again." });
 }
