@@ -33,7 +33,7 @@ export async function analyseListingWithAdapter(data, fallback) {
       }),
     });
     if (!response.ok) throw new Error("Listing analysis endpoint unavailable");
-    return { source: "ai", result: await response.json() };
+    return { source: "ai", result: { ...fallback(data), ai: await response.json() } };
   } catch (error) {
     return { source: "fallback", error: error.message, result: fallback(data) };
   }

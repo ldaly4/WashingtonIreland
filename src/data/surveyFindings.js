@@ -1,0 +1,42 @@
+export const surveyFindings = {
+  sampleSize: 23,
+  status: "Early findings",
+  lastUpdated: "July 2026",
+  caveat: "These are early findings from a small, self-selected survey and should not be treated as representative of all young people.",
+  headlineStats: [
+    ["Buying within five years feels unlikely or not realistic", "48%", "11 of 23 respondents"],
+    ["Would definitely or possibly test HomePath", "87%", "20 of 23 respondents"],
+    ["Requested a full cash-needed breakdown", "48%", "11 of 23 respondents"],
+    ["Requested an explanation of the buying process", "48%", "11 of 23 respondents"],
+  ],
+  confusingParts: [
+    ["Contracts and legal steps", 14],
+    ["Surveys and property condition", 13],
+    ["Renovation costs", 12],
+    ["Government schemes and supports", 11],
+    ["Other upfront buying costs", 11],
+    ["Choosing a solicitor", 8],
+  ],
+  requestedFeatures: [
+    ["Full cash needed to buy", 11],
+    ["Buying process explained", 11],
+    ["Supports worth checking", 9],
+    ["Estimated renovation costs", 8],
+    ["Viewing questions", 8],
+    ["Areas or property types within budget", 8],
+    ["Borrowing capacity estimate", 7],
+    ["Property-listing analyser", 5],
+    ["Official organisation links", 5],
+  ],
+  adviceSources: [
+    ["Parents, family or friends who had bought", 11],
+    ["Mortgage broker", 5],
+    ["Would not know who to ask", 1],
+  ],
+  quotes: [
+    "The absolute basics — an explanation that doesn’t assume I understand housing and finance terms.",
+    "How a mortgage actually works.",
+    "Hidden costs.",
+    "What to do and what order, solicitor etc.",
+  ],
+};

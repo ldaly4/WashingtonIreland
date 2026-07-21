@@ -5,15 +5,14 @@ const nav = [
   ["/", "Home"],
   ["/check-position", "My position"],
   ["/check-listing", "Check a house"],
-  ["/learn", "Learn"],
-  ["/buying-guide", "Buying a home"],
+  ["/buying-guide", "Buying explained"],
   ["/housing-pulse", "Housing Pulse"],
 ];
 const mobileLabel = {
   "/": "Home",
   "/check-position": "Position",
   "/check-listing": "House",
-  "/learn": "Learn",
+  "/buying-guide": "Explained",
 };
 
 export function HouseMark() {
@@ -30,7 +29,7 @@ export function HouseMark() {
 export default function Layout({ path, navigate, children }) {
   const [more,setMore]=useState(false), [ask,setAsk]=useState(false);
   useEffect(()=>{
-    const open=()=>setAsk(true);
+    const open=event=>{setAsk(event.detail?.question || true)};
     window.addEventListener("homepath-open-ask",open);
     return()=>window.removeEventListener("homepath-open-ask",open);
   },[]);
@@ -50,25 +49,30 @@ export default function Layout({ path, navigate, children }) {
       <button className={more ? "active" : ""} onClick={()=>setMore(!more)}>More</button>
     </nav>
     {more && <div className="more-menu">
-      {[["/buying-guide","Buying guide"],["/housing-pulse","Housing Pulse"],["/advice-centre","Advice centre"],["/privacy","Privacy"]].map(([href,label])=><a key={href} href={`#${href}`} onClick={e=>{setMore(false);go(e,href)}}>{label}</a>)}
+      {[["/savings-plan","Savings plan"],["/learn","Buying basics modules"],["/glossary","Glossary"],["/housing-pulse","Housing Pulse"],["/advice-centre","Advice centre"],["/privacy","Privacy"]].map(([href,label])=><a key={href} href={`#${href}`} onClick={e=>{setMore(false);go(e,href)}}>{label}</a>)}
       <button onClick={()=>{setMore(false);setAsk(true)}}>Ask HomePath</button>
     </div>}
     <button className="ask-fab" onClick={()=>setAsk(true)}>Ask HomePath</button>
-    {ask && <AskDrawer close={()=>setAsk(false)} navigate={navigate}/>}
+    {ask && <AskDrawer initialQuestion={typeof ask === "string" ? ask : ""} close={()=>setAsk(false)} navigate={navigate}/>}
   </div>;
 }
 
-function AskDrawer({ close, navigate }) {
+function AskDrawer({ close, navigate, initialQuestion }) {
   const answers = {
+    "Who should I contact first?":"If you are unsure where you stand, a mortgage broker, adviser or lender is often a useful first conversation. You can speak to them before finding a house. If your question is legal, speak to a solicitor or conveyancer. If it is about condition, speak to a surveyor.",
     "What does approval in principle mean?":"It is an early indication of what a lender may offer. It is not final approval and it is not tied to every property.",
     "Can I speak to a broker before finding a house?":"Yes. Speaking to a broker is an information-gathering step. It does not commit you to a mortgage.",
     "What is a booking deposit?":"In the Republic of Ireland, it is often paid to the estate agent after an offer is accepted. It normally forms part of the overall buyer deposit and is usually refundable before contracts are signed.",
     "What does a solicitor do?":"A solicitor checks the legal title, contracts, planning, boundaries and mortgage legal documents. They also handle the transfer of ownership.",
+    "What is conveyancing?":"Conveyancing is the legal work needed to transfer ownership of a property. Your solicitor or conveyancer checks title, contracts, searches and mortgage legal documents.",
+    "How much cash do I need beyond the deposit?":"You normally need money for legal work, tax, survey, valuation, insurance, moving and a buffer. The deposit is only one part of the cash target.",
+    "What is the difference between a survey and valuation?":"A valuation is mainly for the lender. A survey is for you and checks the property condition in more detail.",
+    "What happens after my offer is accepted?":"You may go sale agreed or have an offer accepted, then legal checks, survey, mortgage approval and contract steps happen. You do not normally own the home at offer stage.",
     "What should I ask at a viewing?":"Ask about heating, roof, wiring, windows, damp, planning, management fees, services and what is included in the sale.",
     "Is an older house a bad idea?":"Age alone does not make a home a bad purchase. It may need more investigation, especially around roof, damp, wiring, plumbing and extensions.",
     "What is a sinking fund?":"For apartments, a sinking fund is money set aside by the management company for larger future repairs or works.",
   };
-  const [q,setQ]=useState(Object.keys(answers)[0]);
+  const [q,setQ]=useState(initialQuestion || Object.keys(answers)[0]);
   const [answer,setAnswer]=useState("");
   const [loading,setLoading]=useState(false);
   const ask = async () => {

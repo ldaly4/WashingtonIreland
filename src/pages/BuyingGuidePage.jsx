@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Disclaimer, PageHead } from "../components/Layout";
 import { money } from "../lib/calculations";
+import CostsBeyondDeposit from "../components/CostsBeyondDeposit";
 
 const links = {
   roi: [
@@ -18,13 +19,16 @@ const links = {
 };
 
 const people = [
-  ["Mortgage broker or adviser", "Helps assess borrowing options and submit the mortgage application. May be lender-paid or may charge a fee."],
-  ["Lender", "Decides whether to provide the mortgage and on what terms."],
-  ["Estate agent", "Represents the seller, arranges viewings and communicates offers."],
-  ["Solicitor or conveyancer", "Carries out the legal work and transfer of ownership."],
-  ["Surveyor", "Independently checks the physical condition of the property."],
-  ["Valuer", "Provides a valuation for the lender. This is not a replacement for the buyer’s survey."],
-  ["Insurer", "Provides home insurance and, where required, mortgage protection or life cover."],
+  ["Mortgage broker or adviser", "Looks at borrowing options and may help submit the mortgage application.", "Before finding a house", "Usually works for you, but may be paid by lenders", "Many are lender-paid; some charge fees", "How are you paid? Which lenders do you compare?"],
+  ["Bank or lender", "Decides whether to provide the mortgage and on what terms.", "Before or after speaking to a broker", "Works for itself", "Application, valuation or product fees may apply", "What can I borrow? What documents do you need?"],
+  ["Estate agent", "Arranges viewings and communicates offers.", "When viewing or making an offer", "Normally represents the seller", "Usually paid by the seller", "Are there offers? Why is the seller moving?"],
+  ["Solicitor or conveyancer", "Handles the legal process, title, contracts, planning and transfer of ownership.", "Before or just after going sale agreed", "Works for you", "Illustrative legal fees vary widely", "What is included in your quote?"],
+  ["Surveyor", "Checks the property’s condition for you.", "Before signing or exchanging contracts", "Works for you", "Survey type and cost vary", "What defects need urgent attention?"],
+  ["Structural engineer", "Investigates possible structural movement or serious defects.", "If a surveyor recommends it", "Works for you", "Specialist reports vary", "Is further investigation needed before proceeding?"],
+  ["Insurer", "Provides home insurance and any required life or mortgage protection cover.", "Before mortgage drawdown or completion", "Works under policy terms", "Premiums vary", "What cover does the lender require?"],
+  ["Local authority", "Explains local housing supports and affordable purchase routes.", "When checking public supports", "Public body", "Application rules vary", "What schemes are open locally?"],
+  ["Housing Executive", "Northern Ireland housing support and social housing route.", "If housing need or support may be relevant", "Public body", "No buying fee, but rules apply", "What evidence do I need?"],
+  ["Scheme provider", "Runs a specific support scheme.", "Before relying on a support", "Scheme-specific", "Terms vary", "What are the current rules and limits?"],
 ];
 
 const roiSteps = [
@@ -103,8 +107,9 @@ function StepCard({ step, index, open, toggle, jurisdiction, navigate }) {
       <section><h3>What happens</h3><p>{what}</p>{jurisdiction==="roi" && index===0 && <CostCalculator jurisdiction={jurisdiction}/>} {jurisdiction==="roi" && index===5 && <DepositExample/>} {jurisdiction==="ni" && index===8 && <DepositExamplesNI/>}</section>
       <section><h3>Who to contact</h3><p>{who}</p>{jurisdiction==="roi" && index===4 && <button className="guide-inline-button" onClick={()=>navigate("/check-listing")}>Check a property listing</button>}</section>
       <section><h3>Money needed now</h3><p>{moneyNow}</p></section>
-      <section><h3>Before you move on</h3><p>{before}</p></section>
-      <section><h3>Documents and delays</h3><p>Delays often come from missing documents, survey issues, legal title questions, lender conditions, planning queries or slow replies between parties.</p></section>
+      <section><h3>Documents needed</h3><p>ID, proof of address, payslips, statements, savings evidence, property details or legal documents may be needed depending on the step.</p></section>
+      <section><h3>Common mistakes</h3><p>Assuming an early mortgage figure is final, using all savings for the deposit, skipping survey advice, or signing before legal and mortgage checks are clear.</p></section>
+      <section><h3>What happens next</h3><p>{before}</p></section>
       <section><h3>Related lesson</h3><p>Want the short version first? Take a 5-minute lesson in Learn.</p><button className="guide-inline-button" onClick={()=>navigate("/learn")}>Open Learn</button></section>
     </div>}
   </article>
@@ -127,12 +132,13 @@ export default function BuyingGuidePage({ navigate }) {
   const choose = next => { localStorage.setItem("homepath-buying-jurisdiction", next); setJurisdiction(next); setOpen([0,1]); };
   const toggle = i => setOpen(current => current.includes(i) ? current.filter(x=>x!==i) : [i, ...current].slice(0,2));
   return <div className="page buying-guide-page">
-    <PageHead eyebrow="Step-by-step guide" title="Buying a home">Buying your first home can feel like everyone knows the process except you. Here is what happens, who you need to speak to and when you need money.</PageHead>
+    <PageHead eyebrow="Buying explained" title="Buying a home, step by step">Buying your first home can feel like everyone knows the process except you. Here is what happens, who you need to speak to and when you need money.</PageHead>
     <div className="segmented-toggle" role="tablist" aria-label="Choose location"><button className={jurisdiction==="roi"?"active":""} onClick={()=>choose("roi")}>Republic of Ireland</button><button className={jurisdiction==="ni"?"active":""} onClick={()=>choose("ni")}>Northern Ireland</button></div>
     <section className="guide-summary"><div><p className="eyebrow">You will normally need</p><ul><li>a mortgage broker, adviser or lender</li><li>a solicitor{jurisdiction==="ni" ? " or conveyancer" : ""}</li><li>an independent surveyor</li><li>an estate agent, who represents the seller</li><li>deposit savings</li><li>money for legal, tax, survey, insurance and moving costs</li></ul></div><aside>You do not need to have found a house before speaking to a mortgage broker or adviser.</aside></section>
     <div className="journey-strip" aria-label="Buying journey">{["Budget","Mortgage","Search","Offer","Survey","Contracts","Keys"].map((x,i)=><span key={x} className={i<2?"active":""}>{x}</span>)}</div>
     <section className="guide-steps">{steps.map((step,i)=><StepCard key={step[0]} step={step} index={i} open={open.includes(i)} toggle={()=>toggle(i)} jurisdiction={jurisdiction} navigate={navigate}/>)}</section>
-    <section className="people-section"><div className="section-heading"><span>{m}</span><div><h2>Who does what?</h2><p>The people and organisations you may deal with.</p></div></div><div className="people-grid">{people.map(([name,text])=><article key={name}><h3>{name}</h3><p>{text}</p></article>)}</div></section>
+    <CostsBeyondDeposit jurisdiction={jurisdiction} initialPrice={jurisdiction==="ni"?180000:350000} compact />
+    <section className="people-section"><div className="section-heading"><span>?</span><div><h2>Who do I contact?</h2><p>The people and organisations you may deal with.</p></div></div><button className="primary" onClick={()=>window.dispatchEvent(new CustomEvent("homepath-open-ask",{detail:{question:"Who should I contact first?"}}))}>Not sure who to speak to first? <span>→</span></button><div className="people-grid detailed">{people.map(([name,what,when,side,cost,question])=><article key={name}><h3>{name}</h3><p>{what}</p><dl><div><dt>When</dt><dd>{when}</dd></div><div><dt>Works for</dt><dd>{side}</dd></div><div><dt>Cost</dt><dd>{cost}</dd></div></dl><strong>Ask: {question}</strong></article>)}</div></section>
     <section className="money-timeline"><div className="section-heading"><span>{m}</span><div><h2>Money timeline</h2><p>When different payments may appear.</p></div></div><div>{moneyTimeline[jurisdiction].map(([stage,text])=><article key={stage}><h3>{stage}</h3><p>{text}</p></article>)}</div></section>
     <section className="official-sources"><div className="section-heading"><span>↗</span><div><h2>Check the official guidance</h2><p>Open these in a new tab before relying on any rule or cost.</p></div></div><div>{links[jurisdiction].map(([label,href])=><a key={href} href={href} target="_blank" rel="noreferrer">{label}</a>)}</div></section>
     <Disclaimer>HomePath provides general guidance only. Costs, legal processes and lender requirements vary. Always confirm your position with the relevant lender, mortgage adviser, solicitor, surveyor, tax authority or scheme provider.</Disclaimer>

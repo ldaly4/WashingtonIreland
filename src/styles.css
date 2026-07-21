@@ -174,12 +174,53 @@
 .url-warning{margin-bottom:20px}
 .form-error{background:#faf5f3;border-left:4px solid #a44c38;padding:12px;color:#743628}
 
+/* Research-led clarity updates */
+.research-line{max-width:900px;margin:28px auto 0;color:#dbe6d6;line-height:1.55;font-weight:700}
+.costs-guide{border:1px solid var(--line);padding:24px;margin:32px 0;background:#fff}
+.costs-guide.compact{padding:20px}
+.costs-head{display:grid;grid-template-columns:1fr 220px;gap:20px;align-items:end}
+.costs-head h2{font:800 28px Manrope,sans-serif;color:var(--navy);margin:0 0 8px}
+.costs-head p{color:#5f6877;line-height:1.5;margin:0}
+.costs-head label{display:grid;gap:8px;font-weight:800;color:var(--navy)}
+.costs-head input{border:1px solid var(--line);padding:11px}
+.cash-stack{display:flex;height:42px;overflow:hidden;border-radius:5px;margin:22px 0;background:#edf5e8}
+.cash-stack span{display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800;text-align:center;min-width:48px}
+.cash-stack span:nth-child(1){background:var(--green)}.cash-stack span:nth-child(2){background:#497a55}.cash-stack span:nth-child(3){background:#769b68}.cash-stack span:nth-child(4){background:#9ab985;color:var(--navy)}.cash-stack span:nth-child(5){background:var(--pale);color:var(--navy)}
+.cost-line{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:12px 0;color:var(--navy)}
+.cost-line span{font-weight:800}
+.cost-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.cost-list article{border:1px solid var(--line);padding:13px;display:grid;grid-template-columns:1fr auto;gap:5px 10px}
+.cost-list small{grid-column:1/-1;color:#657080;line-height:1.4}
+.cost-warning{border-left:4px solid var(--green);background:#f3f8ef;padding:13px;margin:16px 0 0;color:#334235}
+.people-grid.detailed article{display:grid;gap:10px}
+.people-grid dl{margin:0;display:grid;gap:7px}
+.people-grid dl div{display:grid;grid-template-columns:72px 1fr;gap:8px;font-size:13px}
+.people-grid dt{color:#657080}.people-grid dd{margin:0;color:var(--navy)}
+.glossary-search{max-width:620px;margin-bottom:26px}
+.glossary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.glossary-grid article{border:1px solid var(--line);padding:18px}
+.glossary-grid h2{font:800 20px Manrope,sans-serif;color:var(--navy);margin:0 0 8px}
+.glossary-grid p{color:#5f6877;line-height:1.5}
+.glossary-grid button{border:1px solid var(--green);background:#fff;color:var(--green);font-weight:800;padding:9px 11px}
+.rank-list{display:grid;gap:9px}
+.rank-list p{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:9px;margin:0;color:#4f5968}
+.rank-list span{font-weight:800;color:var(--green);white-space:nowrap}
+.quote-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:32px 0}
+.quote-grid blockquote{margin:0;border-left:4px solid var(--green);background:#f3f8ef;padding:18px;color:var(--navy);font-weight:800;line-height:1.45}
+.stat-grid article strong{font:800 36px Manrope,sans-serif;color:var(--green)}
+.worry-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.worry-grid article{border:1px solid var(--line);border-top:4px solid var(--pale);padding:16px}
+.worry-grid article:nth-child(3),.worry-grid article:nth-child(4){border-top-color:#a44c38}
+.worry-grid h3{font:800 18px Manrope,sans-serif;color:var(--navy);margin:0 0 8px}
+.worry-grid p{color:#5f6877;line-height:1.5;margin:0}
+
 @media(max-width:900px){
   .desktop-nav a{padding:10px 8px;font-size:13px}
   .guide-summary,.guide-step-body{grid-template-columns:1fr}
   .guide-summary ul,.guide-calc-fields,.people-grid,.official-sources>div:last-child{grid-template-columns:1fr}
   .money-timeline>div:last-child{grid-template-columns:1fr 1fr}
   .homepath-dashboard,.planner-grid,.stat-grid,.themes-grid,.older-grid{grid-template-columns:1fr 1fr}
+  .glossary-grid,.worry-grid,.quote-grid,.cost-list{grid-template-columns:1fr 1fr}
 }
 
 @media(max-width:760px){
@@ -187,6 +228,9 @@
   .bottom-nav a{font-size:11px}
   .ask-fab{display:none}
   .homepath-dashboard,.planner-grid,.stat-grid,.themes-grid,.older-grid,.mode-tabs{grid-template-columns:1fr}
+  .costs-head,.glossary-grid,.worry-grid,.quote-grid,.cost-list{grid-template-columns:1fr}
+  .cash-stack{height:auto;display:grid}
+  .cash-stack span{width:100%!important;min-height:34px}
   .number-card strong{font-size:21px}
   .research-invite{display:grid}
   .segmented-toggle{width:100%;margin-top:-8px}

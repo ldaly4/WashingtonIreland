@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { PageHead, Disclaimer } from "../components/Layout";
 import { calculatePosition, money } from "../lib/calculations";
 import { saveHomePath, researchInviteState, setResearchInvite } from "../lib/storage";
+import CostsBeyondDeposit from "../components/CostsBeyondDeposit";
 
 const initial = { jurisdiction:"roi", area:"", buying:"alone", income:"", monthlySavings:"", monthlyRent:"", monthlyPension:"", savings:"", firstTime:"yes", housing:"renting", home:"3-bed", renovation:"none", target:"", research:false };
 const savedCheck = () => {
@@ -78,12 +79,13 @@ const supportReasons = {
   ],
 };
 
-function shortAnswer(data, r, m) {
-  if (!data.target) return `Based on what you entered, your rough starting range is ${m(r.purchaseLow)}–${m(r.purchaseHigh)}. Compare that with real ${data.home} listings in ${data.area || "your preferred area"} and keep supports as something to check, not assume.`;
-  if (r.target <= r.purchaseHigh) return `Your target price sits within this rough no-support range. It may still depend on the property, lender checks, upfront costs and survey findings, but it looks worth exploring with real mortgage advice.`;
+function shortAnswer(data, r, m, upfront, savingsGap) {
+  const borrowing = r.borrowingLow === r.borrowingHigh ? m(r.borrowingHigh) : `${m(r.borrowingLow)}–${m(r.borrowingHigh)}`;
+  if (!data.target) return `Based on what you entered, your rough borrowing range is ${borrowing}, giving an estimated property-price range of ${m(r.purchaseLow)}–${m(r.purchaseHigh)}. Your full cash target is about ${m(upfront)}, and your current savings are ${m(r.savings)}.`;
+  if (r.target <= r.purchaseHigh) return `Based on what you entered, your target price appears close to your rough standard buying range. Your main cash target is about ${m(upfront)} and your estimated savings gap is ${m(savingsGap)}.`;
   const gap = r.target - r.purchaseHigh;
   const routes = r.jurisdiction === "ni" ? "Co-Ownership, a smaller home nearby, or a property needing light work" : "affordable purchase, a smaller home nearby, or a property needing light work";
-  return `A standard purchase at your target price looks difficult without support. It is about ${m(gap)} above the top of this rough range. Your strongest routes to check are ${routes}.`;
+  return `Based on the information you entered, your target property may be above your rough standard buying range by about ${m(gap)}. Your main gap is not only the deposit: you may also need about ${m(upfront - (r.jurisdiction==="roi" ? r.deposit : r.fiveDeposit))} for tax, legal fees, survey, valuation and a basic buffer. Routes worth checking include ${routes}.`;
 }
 
 function PositionResults({ data, r, edit }) {
@@ -108,8 +110,10 @@ function PositionResults({ data, r, edit }) {
     <div className="progress-track labelled"><span style={{width:`${progress}%`}}/><small>{Math.round(progress)}% of estimated upfront cash target</small></div>
     <section className="short-answer">
       <p className="eyebrow">The short answer</p>
-      <p>{shortAnswer(data, r, m)}</p>
+      <p>{shortAnswer(data, r, m, upfront, savingsGap)}</p>
     </section>
+    <section className="result-section"><div className="section-heading"><span>£€</span><div><h2>The full cash picture</h2><p>The deposit is only one part of the money needed.</p></div></div><CostsBeyondDeposit jurisdiction={r.jurisdiction} initialPrice={r.target} /></section>
+    <button className="primary wide" onClick={()=>window.location.hash="/buying-guide"}>See how the buying process works <span>→</span></button>
     <section className="next-realistic"><p className="eyebrow">Your next realistic step</p><h2>{nextStep}.</h2><p>Based on your target of a {data.home} near {data.area || "your chosen area"}, this is the step most likely to give you clearer information.</p></section>
     <section className="range-panel">
       <div><p className="eyebrow">Your buying range</p><h2>{m(r.purchaseLow)}–{m(r.purchaseHigh)}</h2><p>Estimated purchase range without housing supports</p></div>

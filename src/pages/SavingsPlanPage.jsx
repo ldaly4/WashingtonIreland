@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Disclaimer, PageHead } from "../components/Layout";
 import { money } from "../lib/calculations";
 import { readStore, researchInviteState, setResearchInvite } from "../lib/storage";
+import CostsBeyondDeposit from "../components/CostsBeyondDeposit";
 
 const monthName = months => {
   if (!Number.isFinite(months) || months <= 0) return "already there";
@@ -53,6 +54,7 @@ export default function SavingsPlanPage() {
     </section>
     <div className="progress-track"><span style={{width:`${Math.min(100, calc.total ? calc.saved/calc.total*100 : 0)}%`}} /></div>
     <section className="what-if"><div><h2>What if?</h2><p>Try a change and see the timeline update. This is a rough estimate, not financial advice.</p></div><label>Save more each month<select value={extra} onChange={e=>setExtra(Number(e.target.value))}><option value="0">No extra</option><option value="100">€ / £100 extra</option><option value="200">€ / £200 extra</option></select></label><label>Reduce target property price<input type="number" min="0" step="5000" value={lower} onChange={e=>setLower(e.target.value)} /></label><p><strong>Current plan:</strong> {Number.isFinite(calc.months)?`${calc.months} months`:"add monthly savings"} · <strong>Estimated target:</strong> {monthName(calc.months)}</p></section>
+    <CostsBeyondDeposit jurisdiction={data.jurisdiction} initialPrice={Number(data.price)||300000} compact />
     <section className="next-steps"><p className="eyebrow">Your next three savings milestones</p><ol><li><span>1</span><p>Reach {m(Math.min(calc.total, calc.saved + 5000))}.</p></li><li><span>2</span><p>Build a separate buying-cost fund of about {m(calc.costs)}.</p></li><li><span>3</span><p>Keep an emergency buffer outside the deposit where possible.</p></li></ol></section>
     {!invite.dismissed && <section className="research-invite"><h2>Help us understand young people’s experience of housing.</h2><p>We are collecting anonymous views on housing knowledge, confidence and barriers. This is optional and does not affect your results.</p><button>Share my view</button><button onClick={()=>setResearchInvite({dismissed:true})}>Maybe later</button><button onClick={()=>setResearchInvite({dismissed:true})}>No thanks</button></section>}
     <Disclaimer>Rent, savings history and pension contributions may help demonstrate that you can manage regular commitments, but each lender assesses repayment capacity differently.</Disclaimer>
