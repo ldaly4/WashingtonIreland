@@ -53,11 +53,11 @@ export default function Layout({ path, navigate, children }) {
       <button onClick={()=>{setMore(false);setAsk(true)}}>Ask HomePath</button>
     </div>}
     <button className="ask-fab" onClick={()=>setAsk(true)}>Ask HomePath</button>
-    {ask && <AskDrawer initialQuestion={typeof ask === "string" ? ask : ""} close={()=>setAsk(false)} navigate={navigate}/>}
+    {ask && <AskDrawer route={path} initialQuestion={typeof ask === "string" ? ask : ""} close={()=>setAsk(false)} navigate={navigate}/>}
   </div>;
 }
 
-function AskDrawer({ close, navigate, initialQuestion }) {
+function AskDrawer({ close, navigate, initialQuestion, route }) {
   const answers = {
     "Who should I contact first?":"If you are unsure where you stand, a mortgage broker, adviser or lender is often a useful first conversation. You can speak to them before finding a house. If your question is legal, speak to a solicitor or conveyancer. If it is about condition, speak to a surveyor.",
     "What does approval in principle mean?":"It is an early indication of what a lender may offer. It is not final approval and it is not tied to every property.",
@@ -74,23 +74,41 @@ function AskDrawer({ close, navigate, initialQuestion }) {
   };
   const [q,setQ]=useState(initialQuestion || Object.keys(answers)[0]);
   const [answer,setAnswer]=useState("");
+  const [structured,setStructured]=useState(null);
+  const [error,setError]=useState("");
+  const [feedback,setFeedback]=useState("");
   const [loading,setLoading]=useState(false);
+  useEffect(()=>{
+    const onKey=e=>{ if(e.key==="Escape") close(); };
+    window.addEventListener("keydown",onKey);
+    return()=>window.removeEventListener("keydown",onKey);
+  },[close]);
   const ask = async () => {
-    setLoading(true);
+    setLoading(true); setError("");
     try {
-      const result = await askHomePath(q);
+      const result = await askHomePath(q, { route });
+      setStructured(result);
       setAnswer(result.answer || answers[q]);
     } catch {
+      setError("HomePath’s live explanation service is temporarily unavailable. The local guidance library is being used.");
       setAnswer(answers[q]);
     } finally {
       setLoading(false);
     }
   };
+  const clear=()=>{setAnswer("");setStructured(null);setError("");setFeedback("");};
   return <div className="drawer-backdrop" role="dialog" aria-modal="true" aria-label="Ask HomePath">
-    <aside className="ask-drawer"><button className="drawer-close" onClick={close}>Close</button><p className="eyebrow">Ask HomePath</p><h2>Quick housing answers</h2><p>General guidance only. HomePath will not invent current scheme rules or make eligibility decisions.</p>
+    <aside className="ask-drawer"><button className="drawer-close" onClick={close}>Close</button><p className="eyebrow">Not sure who to ask? Ask HomePath.</p><h2>Quick housing answers</h2><p>Ask a question about buying, housing supports, mortgages, legal steps or property condition. I’ll explain it in plain language and point you towards the right next step.</p>
+      <p className="privacy-note">Your question may be processed by an external AI service to generate an answer. Do not include bank details, account numbers or other sensitive personal information.</p>
       <select value={q} onChange={e=>{setQ(e.target.value);setAnswer("")}}>{Object.keys(answers).map(x=><option key={x}>{x}</option>)}</select>
       <button className="guide-inline-button" onClick={ask} disabled={loading}>{loading ? "Asking…" : "Ask"}</button>
-      <div className="ask-answer">{answer || answers[q]} <small>Confirm anything important with a broker, lender, solicitor, surveyor or official provider.</small></div>
+      {loading && <p role="status" aria-live="polite">Loading HomePath answer…</p>}
+      {error && <p className="form-error">{error}</p>}
+      <div className="ask-answer" aria-live="polite">{answer || answers[q]} <small>{structured?.disclaimer || "Confirm anything important with a broker, lender, solicitor, surveyor or official provider."}</small></div>
+      {structured?.officialSources?.length > 0 && <div className="source-list"><h3>Sources</h3>{structured.officialSources.map(s=><a key={s.url} href={s.url} target="_blank" rel="noreferrer">{s.label}</a>)}</div>}
+      {structured?.suggestedActions?.length > 0 && <div className="source-list"><h3>Related HomePath actions</h3>{structured.suggestedActions.map(a=><button key={a.label} onClick={()=>{close();navigate(a.route)}}>{a.label}</button>)}</div>}
+      <div className="ask-tools"><button onClick={ask} disabled={loading}>Retry</button><button onClick={clear}>Clear conversation</button></div>
+      <div className="ask-feedback"><span>Was this helpful?</span><button className={feedback==="yes"?"active":""} onClick={()=>setFeedback("yes")}>Yes</button><button className={feedback==="no"?"active":""} onClick={()=>setFeedback("no")}>Not quite</button></div>
       <button className="guide-inline-button" onClick={()=>{close();navigate("/learn")}}>Open related lessons</button>
     </aside>
   </div>

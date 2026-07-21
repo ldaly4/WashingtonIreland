@@ -10,6 +10,10 @@ Cloudflare Pages Functions are ready in:
 
 - `functions/api/listing-analysis.js`
 - `functions/api/ask-homepath.js`
+- `functions/api/chat.js`
+- `functions/api/analyse-listing.js`
+- `functions/api/explain-results.js`
+- `functions/api/health.js`
 
 The key is read from a Cloudflare Secret called:
 
@@ -76,8 +80,9 @@ Codex will then update `public/homepath-config.js` to:
 
 ```js
 window.HOMEPATH_CONFIG = {
-  LISTING_ANALYSIS_API_URL: "https://homepath-ai.pages.dev/api/listing-analysis",
-  ASK_HOMEPATH_API_URL: "https://homepath-ai.pages.dev/api/ask-homepath",
+  LISTING_ANALYSIS_API_URL: "https://homepath-ai.pages.dev/api/analyse-listing",
+  ASK_HOMEPATH_API_URL: "https://homepath-ai.pages.dev/api/chat",
+  EXPLAIN_RESULTS_API_URL: "https://homepath-ai.pages.dev/api/explain-results",
 };
 ```
 

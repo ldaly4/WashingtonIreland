@@ -3,6 +3,7 @@ import { PageHead, Disclaimer } from "../components/Layout";
 import { calculatePosition, money } from "../lib/calculations";
 import { saveHomePath, researchInviteState, setResearchInvite } from "../lib/storage";
 import CostsBeyondDeposit from "../components/CostsBeyondDeposit";
+import { explainResults } from "../services/explainResults";
 
 const initial = { jurisdiction:"roi", area:"", buying:"alone", income:"", monthlySavings:"", monthlyRent:"", monthlyPension:"", savings:"", firstTime:"yes", housing:"renting", home:"3-bed", renovation:"none", target:"", research:false };
 const savedCheck = () => {
@@ -90,6 +91,9 @@ function shortAnswer(data, r, m, upfront, savingsGap) {
 
 function PositionResults({ data, r, edit }) {
   const m = n => money(n, r.jurisdiction);
+  const [aiExplanation,setAiExplanation]=useState(null);
+  const [aiLoading,setAiLoading]=useState(false);
+  const [aiError,setAiError]=useState("");
   const targetGap = Math.max(0, r.target - r.borrowingHigh - r.savings);
   const upfront = r.jurisdiction === "roi" ? r.deposit + r.costs : Math.min(r.fiveDeposit + r.costs, r.tenDeposit + r.costs);
   const savingsGap = Math.max(0, upfront - r.savings);
@@ -97,6 +101,26 @@ function PositionResults({ data, r, edit }) {
   const progress = upfront ? Math.min(100, r.savings / upfront * 100) : 0;
   const nextStep = savingsGap > 0 ? "build the deposit and buying-cost fund further" : r.target > r.purchaseHigh ? "check a support route or compare cheaper property types" : "speak to a mortgage broker or lender";
   const invite = researchInviteState();
+  const requestExplanation = async () => {
+    setAiLoading(true); setAiError("");
+    try {
+      setAiExplanation(await explainResults({
+        jurisdiction: r.jurisdiction === "ni" ? "NI" : "ROI",
+        area: data.area,
+        income: r.income,
+        savings: r.savings,
+        targetPrice: r.target,
+        estimatedBorrowing: r.borrowingHigh,
+        estimatedCashNeeded: upfront,
+        savingsGap,
+        relevantSupports: supportReasons[r.jurisdiction].map(([name])=>name).slice(0,5),
+      }));
+    } catch {
+      setAiError("HomePath’s live explanation service is temporarily unavailable. The core calculator and guides still work.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
   return <div className="page results-page"><button className="text-button" onClick={edit}>← Edit my answers</button>
     <PageHead eyebrow="Your HomePath" title="Your HomePath">A visual first look based on what you entered. These figures are rough, not a mortgage offer.</PageHead>
     <section className="homepath-dashboard">
@@ -115,6 +139,7 @@ function PositionResults({ data, r, edit }) {
     <section className="result-section"><div className="section-heading"><span>£€</span><div><h2>The full cash picture</h2><p>The deposit is only one part of the money needed.</p></div></div><CostsBeyondDeposit jurisdiction={r.jurisdiction} initialPrice={r.target} /></section>
     <button className="primary wide" onClick={()=>window.location.hash="/buying-guide"}>See how the buying process works <span>→</span></button>
     <section className="next-realistic"><p className="eyebrow">Your next realistic step</p><h2>{nextStep}.</h2><p>Based on your target of a {data.home} near {data.area || "your chosen area"}, this is the step most likely to give you clearer information.</p></section>
+    <section className="plain-card"><h3>Want this explained in plainer English?</h3><p>HomePath can ask the live explanation service to explain the fixed numbers above. It will not recalculate them.</p><button className="primary" disabled={aiLoading} onClick={requestExplanation}>{aiLoading ? "Explaining…" : "Explain my result"} <span>→</span></button>{aiError && <p className="form-error">{aiError}</p>}{aiExplanation && <div className="ai-explanation"><h3>{aiExplanation.shortAnswer}</h3><p>{aiExplanation.whatItMeans}</p><ul>{aiExplanation.nextSteps?.map(x=><li key={x}>{x}</li>)}</ul><small>{aiExplanation.disclaimer}</small></div>}</section>
     <section className="range-panel">
       <div><p className="eyebrow">Your buying range</p><h2>{m(r.purchaseLow)}–{m(r.purchaseHigh)}</h2><p>Estimated purchase range without housing supports</p></div>
       <div className="metrics"><Metric label={data.buying === "together" ? "Joint income" : "Yearly income"} value={m(r.income)}/><Metric label="Total savings" value={m(r.savings)}/><Metric label="Rough borrowing" value={r.borrowingLow === r.borrowingHigh ? m(r.borrowingHigh) : `${m(r.borrowingLow)}–${m(r.borrowingHigh)}`} accent /></div>

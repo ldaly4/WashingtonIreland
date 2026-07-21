@@ -21,19 +21,21 @@ export async function analyseListingWithAdapter(data, fallback) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        listing: {
-          site: data.site,
-          price: data.price,
+        jurisdiction: data.location?.toLowerCase().match(/belfast|derry|newry|lisburn|antrim|down|armagh|tyrone|fermanagh/) ? "NI" : "ROI",
+        listingUrl: data.mode === "url" ? data.url : "",
+        listingText: data.description || "",
+        manualDetails: {
+          askingPrice: Number(data.price) || null,
           location: data.location,
-          bedrooms: data.bedrooms,
-          type: data.type,
-          energy: data.energy,
-          description: data.description,
+          bedrooms: Number(data.bedrooms) || null,
+          propertyType: data.type,
+          energyRating: data.energy,
         },
       }),
     });
     if (!response.ok) throw new Error("Listing analysis endpoint unavailable");
-    return { source: "ai", result: { ...fallback(data), ai: await response.json() } };
+    const ai = await response.json();
+    return { source: "ai", result: { ...fallback(data), ai } };
   } catch (error) {
     return { source: "fallback", error: error.message, result: fallback(data) };
   }

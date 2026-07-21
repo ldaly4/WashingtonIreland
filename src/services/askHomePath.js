@@ -1,7 +1,7 @@
 export const ASK_HOMEPATH_API_URL =
   globalThis.HOMEPATH_CONFIG?.ASK_HOMEPATH_API_URL || "";
 
-export async function askHomePath(question) {
+export async function askHomePath(question, context = {}, history = []) {
   if (!ASK_HOMEPATH_API_URL) {
     return {
       source: "local",
@@ -12,9 +12,9 @@ export async function askHomePath(question) {
   const response = await fetch(ASK_HOMEPATH_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question }),
+    body: JSON.stringify({ question, context, history }),
   });
   const payload = await response.json();
-  if (!response.ok) throw new Error(payload.error || "Ask HomePath is unavailable");
-  return { source: "ai", answer: payload.answer };
+  if (!response.ok) throw new Error(payload.error?.message || payload.error || "Ask HomePath is unavailable");
+  return { source: "ai", ...payload };
 }

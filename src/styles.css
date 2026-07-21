@@ -131,6 +131,12 @@
 .drawer-close{float:right;border:0;background:#edf5e8;color:var(--green);padding:9px 12px;font-weight:800}
 .ask-answer{background:#f3f8ef;border-left:4px solid var(--green);padding:16px;line-height:1.55}
 .ask-answer small{display:block;margin-top:10px;color:#62705f}
+.source-list{display:grid;gap:8px;margin:14px 0}
+.source-list h3{font:800 14px Manrope,sans-serif;color:var(--navy);margin:0}
+.source-list a,.source-list button,.ask-tools button,.ask-feedback button{border:1px solid var(--line);background:#fff;color:var(--navy);padding:9px 10px;text-align:left;text-decoration:none;font-weight:800}
+.ask-tools,.ask-feedback{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}
+.ask-feedback span{font-weight:800;color:var(--navy)}
+.ask-feedback button.active{border-color:var(--green);color:var(--green);background:#f3f8ef}
 .homepath-dashboard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
 .number-card{border:1px solid var(--line);padding:18px;background:#fff}
 .number-card span{display:block;color:#657080;font-size:12px;margin-bottom:8px}
@@ -173,6 +179,8 @@
 .mode-tabs button.active{background:var(--green);color:#fff;border-color:var(--green)}
 .url-warning{margin-bottom:20px}
 .form-error{background:#faf5f3;border-left:4px solid #a44c38;padding:12px;color:#743628}
+.ai-explanation{margin-top:16px;border-left:4px solid var(--green);background:#f3f8ef;padding:16px}
+.ai-explanation h3{margin-top:0;color:var(--navy)}
 
 /* Research-led clarity updates */
 .research-line{max-width:900px;margin:28px auto 0;color:#dbe6d6;line-height:1.55;font-weight:700}
