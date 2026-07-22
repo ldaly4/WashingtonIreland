@@ -1286,9 +1286,138 @@ main{background:transparent}
   box-shadow:3px 3px 0 var(--hp-ink);
 }
 
+.verified-support-data,
+.lesson-recommendation-grid,
+.finance-lesson-link,
+.jurisdiction-note{
+  position:relative;
+}
+
+.verified-support-data{
+  display:grid;
+  gap:12px;
+  margin:18px 0;
+  padding:16px;
+  border:3px solid var(--hp-ink);
+  background:#fff8d8;
+  box-shadow:4px 4px 0 var(--hp-ink);
+}
+
+.verified-support-data h3{
+  margin:0;
+  font:900 16px Manrope,sans-serif;
+  color:var(--hp-ink);
+}
+
+.verified-support-data article{
+  display:grid;
+  gap:8px;
+  padding:12px;
+  border:3px solid var(--hp-ink);
+  background:#fff;
+}
+
+.verified-support-data small{
+  width:max-content;
+  padding:5px 8px;
+  background:var(--hp-mint);
+  border:2px solid var(--hp-ink);
+  font-weight:900;
+  color:var(--hp-ink);
+}
+
+.verified-support-data ul{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  gap:6px;
+}
+
+.verified-support-data li{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+  border-bottom:2px dotted rgba(16,33,63,.25);
+  padding-bottom:6px;
+}
+
+.verified-support-data b{
+  color:var(--hp-green);
+  text-align:right;
+}
+
+.verified-support-data p{
+  margin:0;
+  color:#334155;
+  line-height:1.45;
+}
+
+.verified-support-data a{
+  width:max-content;
+  color:var(--hp-ink);
+  font-weight:900;
+  text-decoration:none;
+  border-bottom:3px solid var(--hp-coral);
+}
+
+.lesson-recommendation-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+
+.lesson-recommendation-grid article{
+  padding:20px;
+  border:3px solid var(--hp-ink);
+  background:#fff;
+  box-shadow:5px 5px 0 var(--hp-yellow);
+}
+
+.lesson-recommendation-grid article:nth-child(even){
+  box-shadow:5px 5px 0 var(--hp-mint);
+}
+
+.lesson-recommendation-grid h3,
+.finance-lesson-link h2,
+.jurisdiction-note h2{
+  margin:0 0 8px;
+  font:900 22px Manrope,sans-serif;
+  color:var(--hp-ink);
+  letter-spacing:-.025em;
+}
+
+.lesson-recommendation-grid p,
+.finance-lesson-link p,
+.jurisdiction-note p{
+  margin:0 0 14px;
+  color:#334155;
+  line-height:1.55;
+}
+
+.lesson-recommendation-grid button{
+  border:3px solid var(--hp-ink);
+  background:var(--hp-green);
+  color:#fff;
+  font-weight:900;
+  padding:12px 14px;
+  box-shadow:4px 4px 0 var(--hp-ink);
+}
+
+.jurisdiction-note{
+  margin:0 0 26px;
+  background:#fff8d8;
+}
+
+.finance-lesson-link{
+  margin:28px 0;
+  background:#fff8d8;
+}
+
 @media(max-width:900px){
   .hero{grid-template-columns:1fr}
   .city-board{min-height:360px}
+  .lesson-recommendation-grid{grid-template-columns:1fr}
 }
 
 @media(max-width:760px){

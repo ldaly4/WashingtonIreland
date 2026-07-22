@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { PageHead, Disclaimer } from "../components/Layout";
 import { analyseListing, money } from "../lib/calculations";
 import { analyseListingWithAdapter } from "../services/listingAnalysis";
-import { readStore } from "../lib/storage";
+import { readStore, writeStore } from "../lib/storage";
 
 const initial = {mode:"url",url:"",address:"",site:"daft",price:"",location:"",bedrooms:"2",type:"house",energy:"",description:"",work:"none"};
 const questions = ["When was it last rewired?","What type of heating system is there?","Has there been damp, leaks or roof work?","Are there planning or boundary issues?","Are there management fees?","Is it mortgageable in its current condition?","What is included in the sale?","Have there been offers already?"];
@@ -53,8 +53,10 @@ function ListingResults({data,r,edit}) {
   const why = whyReasons(data, r, energy, text);
   const qs = personalisedQuestions(data, r, energy, text);
   const pathways = renovationPathways(r, hasPrice);
+  const recommendedLessons = learningRecommendations(data, r, energy, text);
   const fit = profile && hasPrice ? fitMessage(profile, totalCash, r.price, m) : "Complete Check my position to compare this property with your saved HomePath range.";
   const go = route => { window.location.hash = route; };
+  const openLesson = id => { writeStore("homepath-open-lesson", id); go("/learn"); };
 
   return <div className="page results-page listing-redesign"><button className="text-button" onClick={edit}>← Edit listing</button><PageHead eyebrow="Check a house" title="Your house check">A practical view of cost, comfort, potential and what to investigate next. This is not a survey, valuation or legal review.</PageHead>
     <section className="house-glance">
@@ -82,21 +84,25 @@ function ListingResults({data,r,edit}) {
       <div className="energy-card"><ul>{["Attic insulation","Wall insulation","Heating controls","Heat pump suitability","Solar PV","Window upgrades"].map(x=><li key={x}>{x}</li>)}</ul><p>Some energy upgrades may qualify for grants or support. Eligibility depends on the property and the work being carried out.</p><div><a href="https://www.seai.ie/grants/home-energy-grants/" target="_blank" rel="noreferrer">Check SEAI schemes</a><a href="https://www.nidirect.gov.uk/articles/energy-efficiency-grants" target="_blank" rel="noreferrer">Check NI energy-efficiency programmes</a></div></div>
     </section>
 
-    <section className="result-section"><div className="section-heading"><span>05</span><div><h2>Why we suggested these costs</h2><p>This explains the assumptions. Unknowns stay unknown until a professional checks them.</p></div></div>
+    {recommendedLessons.length > 0 && <section className="result-section"><div className="section-heading"><span>05</span><div><h2>Learning modules worth opening</h2><p>These are pointers, not eligibility decisions. Use them to understand what to ask next.</p></div></div>
+      <div className="lesson-recommendation-grid">{recommendedLessons.map(item=><article key={item.id}><h3>{item.title}</h3><p>{item.reason}</p><button onClick={()=>openLesson(item.id)}>Open module <span>→</span></button></article>)}</div>
+    </section>}
+
+    <section className="result-section"><div className="section-heading"><span>{recommendedLessons.length > 0 ? "06" : "05"}</span><div><h2>Why we suggested these costs</h2><p>This explains the assumptions. Unknowns stay unknown until a professional checks them.</p></div></div>
       <div className="why-costs">{why.map(x=><article key={x}><p>{x}</p></article>)}</div>
     </section>
 
-    <section className="result-section"><div className="section-heading"><span>06</span><div><h2>Questions for your viewing</h2><p>Personalised prompts to save before you go.</p></div></div><div className="question-list">{qs.map((q,i)=><label key={q}><input type="checkbox"/><span><small>{String(i+1).padStart(2,"0")}</small>{q}</span></label>)}</div></section>
+    <section className="result-section"><div className="section-heading"><span>{recommendedLessons.length > 0 ? "07" : "06"}</span><div><h2>Questions for your viewing</h2><p>Personalised prompts to save before you go.</p></div></div><div className="question-list">{qs.map((q,i)=><label key={q}><input type="checkbox"/><span><small>{String(i+1).padStart(2,"0")}</small>{q}</span></label>)}</div></section>
 
-    <section className="result-section"><div className="section-heading"><span>07</span><div><h2>Professionals to speak to</h2><p>Who becomes relevant, and when.</p></div></div>
+    <section className="result-section"><div className="section-heading"><span>{recommendedLessons.length > 0 ? "08" : "07"}</span><div><h2>Professionals to speak to</h2><p>Who becomes relevant, and when.</p></div></div>
       <div className="professional-grid">{professionals().map(([title,when,why])=><article key={title}><h3>{title}</h3><strong>{when}</strong><p>{why}</p></article>)}</div>
     </section>
 
-    <section className="result-section"><div className="section-heading"><span>08</span><div><h2>Related HomePath guidance</h2><p>Useful next steps inside HomePath.</p></div></div>
+    <section className="result-section"><div className="section-heading"><span>{recommendedLessons.length > 0 ? "09" : "08"}</span><div><h2>Related HomePath guidance</h2><p>Useful next steps inside HomePath.</p></div></div>
       <div className="related-grid">{[["Check my position","/check-position"],["Savings plan","/savings-plan"],["Buying guide","/buying-guide"],["Learning Centre","/learn"]].map(([label,route])=><button key={route} onClick={()=>go(route)}>{label}<span>→</span></button>)}</div>
     </section>
 
-    <section className="result-section"><div className="section-heading"><span>09</span><div><h2>What could this become?</h2><p>Inspiration only: three realistic improvement directions.</p></div></div>
+    <section className="result-section"><div className="section-heading"><span>{recommendedLessons.length > 0 ? "10" : "09"}</span><div><h2>What could this become?</h2><p>Inspiration only: three realistic improvement directions.</p></div></div>
       <div className="pathway-grid inspiration-grid">{[
         ["Budget-conscious improvement","Decoration, small repairs and making the home comfortable.",pathways[0]],
         ["Modern family home","Kitchen, bathroom, heating and insulation improvements over time.",pathways[1]],
@@ -170,6 +176,45 @@ function personalisedQuestions(data, r, energy, text) {
   if (r.flags.some(([term])=>["cash buyers","unmortgageable"].includes(term))) qs.push("Why is the listing referring to cash buyers or mortgageability?");
   qs.push("Can a surveyor access the roof space, services and any outbuildings?");
   return qs;
+}
+
+function learningRecommendations(data, r, energy, text) {
+  if (r.ni) {
+    return [];
+  }
+  const recommendations = [];
+  const add = (id, title, reason) => {
+    if (!recommendations.some(item => item.id === id)) recommendations.push({ id, title, reason });
+  };
+  const lowerEnergy = String(energy || "").toLowerCase();
+  if (/\bvacant\b|empty for|unoccupied|derelict/.test(text)) {
+    add("vacant-property-grant", "Could a vacant home grant help?", "The property sounds potentially vacant or derelict. This may be worth investigating with the local authority, but HomePath cannot confirm qualification.");
+  }
+  if (/above (a )?shop|over shop|mixed[- ]use|commercial/.test(text)) {
+    add("vacant-above-shop", "Advanced: converting vacant space above a shop", "This is only relevant to certain above-shop or mixed-use vacancy situations, so treat it as a specialist route to check.");
+  }
+  if (lowerEnergy && lowerEnergy !== "unknown" && !/^a/.test(lowerEnergy)) {
+    add("seai-energy-grants", "Could SEAI grants help improve this home?", "A lower BER/EPC may make energy planning worth checking. This does not mean any specific grant applies.");
+  }
+  if (/ber|insulation|attic|heating|heat pump|solar|energy|retrofit|upgrade|draught|ventilation/.test(text) || data.work === "some" || data.work === "major") {
+    add("seai-energy-grants", "Could SEAI grants help improve this home?", "The listing or renovation route suggests energy work may be worth understanding before budgeting.");
+  }
+  if (/window|windows|door|doors|single glazed|double glazed|sash|period|victorian|georgian|edwardian|traditional/.test(text)) {
+    add("windows-doors-grants", "Can windows and doors receive grant support?", "Windows are mentioned or the property appears older. Check ventilation, conservation and condition before assuming replacement is best.");
+  }
+  if (/heat pump|boiler|heating|radiator/.test(text) || data.work === "major") {
+    add("heat-pump-fabric-first", "Is a heat pump the first step?", "If heating upgrades are part of the plan, assess insulation, ventilation and fabric before assuming a heat pump suits the home.");
+  }
+  if (/solar|pv|panels|heating controls/.test(text)) {
+    add("solar-controls", "Which smaller energy upgrades might help?", "Solar PV or controls may be useful in the right house, but they should fit the wider energy plan.");
+  }
+  if (data.work === "major" || /deep retrofit|a-rated|high performance|complete renovation|major renovation/.test(text)) {
+    add("one-stop-shop-ber", "What is an SEAI One Stop Shop?", "The high-performance modernisation route may need a coordinated whole-house plan.");
+  }
+  if (/period|victorian|georgian|edwardian|traditional|stone wall|solid wall|sash/.test(text)) {
+    add("windows-doors-grants", "Can windows and doors receive grant support?", "Older windows and walls may require a property-specific approach. Check conservation, ventilation and moisture considerations before replacing original features.");
+  }
+  return recommendations.slice(0, 5);
 }
 
 function professionals() {
