@@ -1414,10 +1414,220 @@ main{background:transparent}
   background:#fff8d8;
 }
 
+.sr-only{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+.house-3d-shell,
+.house-illustration,
+.house-loader,
+.house-fallback-note{
+  width:100%;
+}
+
+.house-3d-shell{
+  display:grid;
+  gap:14px;
+}
+
+.house-3d-stage{
+  overflow:hidden;
+  border:4px solid var(--hp-ink);
+  background:#cfe4f7;
+  box-shadow:var(--hp-shadow);
+}
+
+.house-canvas{
+  display:block;
+  width:100%;
+  touch-action:none;
+}
+
+.house-access-panel{
+  display:grid;
+  gap:12px;
+  padding:14px;
+  border:3px solid var(--hp-ink);
+  background:#fff;
+  box-shadow:4px 4px 0 var(--hp-mint);
+}
+
+.house-access-panel p,
+.house-access-panel small{
+  margin:0;
+  color:#334155;
+  line-height:1.45;
+}
+
+.house-access-panel details{
+  border-top:2px dotted rgba(16,33,63,.25);
+  padding-top:10px;
+}
+
+.house-access-panel summary{
+  cursor:pointer;
+  font-weight:900;
+  color:var(--hp-ink);
+}
+
+.house-access-panel ul{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:0;
+  margin:10px 0 0;
+  list-style:none;
+}
+
+.house-access-panel button,
+.house-reset-button,
+.visual-stage-list button,
+.part-picker label{
+  border:3px solid var(--hp-ink);
+  background:var(--hp-paper);
+  color:var(--hp-ink);
+  font-weight:900;
+  padding:8px 10px;
+  box-shadow:3px 3px 0 var(--hp-ink);
+}
+
+.house-access-panel button:disabled{
+  opacity:.7;
+  cursor:not-allowed;
+}
+
+.house-access-panel button:focus-visible,
+.house-reset-button:focus-visible,
+.visual-stage-list button:focus-visible,
+.part-picker input:focus-visible + span{
+  outline:4px solid var(--hp-coral);
+  outline-offset:2px;
+}
+
+.selected-part-output{
+  font-weight:900;
+  color:var(--hp-green)!important;
+}
+
+.house-loader,
+.house-fallback-note{
+  display:grid;
+  place-items:center;
+  gap:12px;
+  padding:16px;
+}
+
+.house-loader p,
+.house-fallback-note p{
+  margin:0;
+  padding:8px 11px;
+  border:3px solid var(--hp-ink);
+  background:#fff8d8;
+  color:var(--hp-ink);
+  font-weight:900;
+}
+
+.house-illustration{
+  display:grid;
+  place-items:center;
+  margin:0;
+  background:#cfe4f7;
+}
+
+.house-illustration svg{
+  display:block;
+  width:100%;
+  max-width:720px;
+  height:auto;
+}
+
+.house-illustration figcaption{
+  width:100%;
+  padding:10px 12px;
+  border-top:3px solid var(--hp-ink);
+  background:#fff;
+  color:#334155;
+  font-weight:800;
+  line-height:1.45;
+}
+
+.visual-test-page .page-head{
+  margin-bottom:28px;
+}
+
+.visual-test-grid{
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:24px;
+  align-items:start;
+}
+
+.visual-test-controls{
+  display:grid;
+  gap:14px;
+  padding:18px;
+  border:4px solid var(--hp-ink);
+  background:#fff;
+  box-shadow:var(--hp-shadow);
+}
+
+.visual-stage-list{
+  display:grid;
+  gap:8px;
+  max-height:260px;
+  overflow:auto;
+  padding-right:4px;
+}
+
+.visual-stage-list button{
+  text-align:left;
+  background:#fff;
+}
+
+.visual-stage-list button.active{
+  background:var(--hp-yellow);
+}
+
+.part-picker{
+  display:grid;
+  gap:8px;
+  margin:12px 0;
+}
+
+.part-picker label{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  box-shadow:none;
+  padding:7px 9px;
+}
+
+.visual-test-canvas,
+.visual-test-mobile{
+  min-width:0;
+}
+
+.visual-test-mobile{
+  max-width:390px;
+  margin:auto;
+  border:4px dashed var(--hp-coral);
+  padding:10px;
+  background:#fff8d8;
+}
+
 @media(max-width:900px){
   .hero{grid-template-columns:1fr}
   .city-board{min-height:360px}
   .lesson-recommendation-grid{grid-template-columns:1fr}
+  .visual-test-grid{grid-template-columns:1fr}
 }
 
 @media(max-width:760px){
