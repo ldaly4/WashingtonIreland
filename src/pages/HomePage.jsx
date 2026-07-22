@@ -28,7 +28,20 @@ export default function HomePage({ navigate }) {
         {!confidence && <div className="confidence-card"><label><span>How confident do you currently feel about understanding your housing options?</span><select defaultValue="" onChange={e=>writeStore("homepath-confidence-start",{score:Number(e.target.value),date:new Date().toISOString()})}><option value="" disabled>Optional: choose 1–10</option>{[1,2,3,4,5,6,7,8,9,10].map(x=><option key={x} value={x}>{x} — {x===1?"Not at all confident":x===10?"Very confident":""}</option>)}</select></label><small>This stays on your device unless you later choose to share research data.</small></div>}
         <Disclaimer>General guidance only. Not mortgage, legal, financial, surveying or planning advice.</Disclaimer>
       </div>
-      <div className="hero-art hub-panel" aria-hidden="true"><HouseMark /><div className="path-line" /><span>HomePath</span></div>
+      <div className="hero-art hub-panel city-board" aria-hidden="true">
+        <div className="city-board-map">
+          <span className="city-route city-route-a" />
+          <span className="city-route city-route-b" />
+          <span className="city-station station-start" />
+          <span className="city-station station-money" />
+          <span className="city-station station-house" />
+          <span className="city-block city-block-home"><HouseMark /></span>
+          <span className="city-block city-block-flat" />
+          <span className="city-block city-block-shop" />
+          <span className="city-crane" />
+        </div>
+        <span>Build your route home</span>
+      </div>
     </section>
     <section className="actions" aria-labelledby="choose-action">
       <div className="section-intro"><p className="eyebrow">Choose a starting point</p><h2 id="choose-action">What do you need today?</h2></div>
