@@ -317,14 +317,14 @@ export default function LearnPage({ navigate }) {
     </section>
 
     <section className="tower-stats" aria-label="Learning progress">
-      <article><strong>{completed.length}</strong><span>modules completed</span></article>
-      <article><strong>{completionPercent}%</strong><span>overall progress</span></article>
+      <article><strong>{completed.length}/{lessonModules.length}</strong><span>interactive pilot lessons completed</span></article>
+      <article><strong>{completionPercent}%</strong><span>pilot lesson progress</span></article>
       <article><strong>{level}</strong><span>current level</span></article>
       <article><strong>{nextModule.title}</strong><span>next recommended lesson · {nextModule.estimatedMinutes} min</span></article>
     </section>
 
     <section className="tower-overview">
-      <div className="progress-track labelled" aria-label={`Overall progress ${completionPercent}%`}><span style={{ width: `${completionPercent}%` }} /><small>{completionPercent}% of the pilot modules completed</small></div>
+      <div className="progress-track labelled" aria-label={`Pilot lesson progress ${completionPercent}%`}><span style={{ width: `${completionPercent}%` }} /><small>{completionPercent}% of the five interactive pilot lessons completed. The roadmap below shows the wider topics planned for HomePath Towers.</small></div>
       <button className="text-button" onClick={reset}>Reset local learning progress</button>
     </section>
 
@@ -337,7 +337,7 @@ export default function LearnPage({ navigate }) {
           <div>
             <span>{cat.label}</span>
             <h2>{cat.name}</h2>
-            <p>{done}/{Math.max(1, playable.length)} playable pilot lessons complete</p>
+            <p>{done}/{Math.max(1, playable.length)} interactive pilot lessons complete</p>
           </div>
           <div className="tower-module-list">
             {playable.map(m => <button key={m.id} onClick={() => startModule(m.id)} className={completed.includes(m.id) ? "done" : ""}>
@@ -356,10 +356,15 @@ export default function LearnPage({ navigate }) {
 function LessonShell({ module, progress, completeModule, close, navigate }) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [skipped, setSkipped] = useState({});
   const [retryCount, setRetryCount] = useState(progress.retryCount || {});
   const [done, setDone] = useState(progress.completedModuleIds.includes(module.id));
   const screen = module.screens[index];
+  const screenKey = `${module.id}-${index}`;
   const isLast = index === module.screens.length - 1;
+  const questionTypes = ["mcq", "truefalse", "ordering", "matching", "sort", "cost", "house", "contact", "decision", "listing"];
+  const isQuestion = questionTypes.includes(screen.type);
+  const canContinue = !isQuestion || Boolean(answers[screenKey]) || Boolean(skipped[screenKey]);
   const progressPercent = Math.round(((index + 1) / module.screens.length) * 100);
 
   const record = (key, value, correct) => {
@@ -378,20 +383,21 @@ function LessonShell({ module, progress, completeModule, close, navigate }) {
       <article className="lesson-card">
         {screen.type === "scenario" && <ScenarioCard screen={screen} />}
         {screen.type === "teach" && <TeachingCard screen={screen} />}
-        {screen.type === "mcq" && <MultipleChoiceQuestion screen={screen} id={`${module.id}-${index}`} onAnswer={record} />}
-        {screen.type === "truefalse" && <TrueFalseQuestion screen={screen} id={`${module.id}-${index}`} onAnswer={record} />}
-        {screen.type === "ordering" && <OrderingQuestion screen={screen} id={`${module.id}-${index}`} onAnswer={record} />}
-        {screen.type === "matching" && <MatchingQuestion screen={screen} id={`${module.id}-${index}`} onAnswer={record} />}
-        {screen.type === "sort" && <SortingQuestion screen={screen} id={`${module.id}-${index}`} onAnswer={record} />}
-        {screen.type === "cost" && <CostBuilderQuestion screen={screen} id={`${module.id}-${index}`} onAnswer={record} />}
-        {screen.type === "house" && <HouseInspectionQuestion screen={screen} id={`${module.id}-${index}`} onAnswer={record} />}
-        {screen.type === "contact" && <ChooseContactQuestion screen={screen} id={`${module.id}-${index}`} onAnswer={record} />}
-        {screen.type === "decision" && <ScenarioDecisionQuestion screen={screen} id={`${module.id}-${index}`} onAnswer={record} />}
-        {screen.type === "listing" && <ListingLanguageQuestion screen={screen} id={`${module.id}-${index}`} onAnswer={record} />}
+        {screen.type === "mcq" && <MultipleChoiceQuestion screen={screen} id={screenKey} onAnswer={record} />}
+        {screen.type === "truefalse" && <TrueFalseQuestion screen={screen} id={screenKey} onAnswer={record} />}
+        {screen.type === "ordering" && <OrderingQuestion screen={screen} id={screenKey} onAnswer={record} />}
+        {screen.type === "matching" && <MatchingQuestion screen={screen} id={screenKey} onAnswer={record} />}
+        {screen.type === "sort" && <SortingQuestion screen={screen} id={screenKey} onAnswer={record} />}
+        {screen.type === "cost" && <CostBuilderQuestion screen={screen} id={screenKey} onAnswer={record} />}
+        {screen.type === "house" && <HouseInspectionQuestion screen={screen} id={screenKey} onAnswer={record} />}
+        {screen.type === "contact" && <ChooseContactQuestion screen={screen} id={screenKey} onAnswer={record} />}
+        {screen.type === "decision" && <ScenarioDecisionQuestion screen={screen} id={screenKey} onAnswer={record} />}
+        {screen.type === "listing" && <ListingLanguageQuestion screen={screen} id={screenKey} onAnswer={record} />}
         {screen.type === "summary" && <LessonSummary module={module} screen={screen} navigate={navigate} />}
         <div className="lesson-actions">
           <button className="guide-inline-button" disabled={index === 0} onClick={() => setIndex(Math.max(0, index - 1))}>Back</button>
-          {!isLast && <button className="primary" onClick={() => setIndex(index + 1)}>Next <span>→</span></button>}
+          {isQuestion && !canContinue && <button className="guide-inline-button" onClick={() => setSkipped(current => ({ ...current, [screenKey]: true }))}>Skip for now</button>}
+          {!isLast && <button className="primary" disabled={!canContinue} onClick={() => setIndex(index + 1)}>{canContinue ? "Next" : "Answer to continue"} <span>→</span></button>}
           {isLast && <button className="primary" onClick={finish} disabled={done}>{done ? "Lesson saved" : "Complete lesson"} <span>✓</span></button>}
         </div>
       </article>

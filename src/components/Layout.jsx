@@ -13,7 +13,7 @@ const mobileLabel = {
   "/": "Home",
   "/learn": "Learn",
   "/check-position": "Position",
-  "/check-listing": "House",
+  "/check-listing": "Listing",
   "/buying-guide": "Explained",
 };
 
@@ -75,7 +75,8 @@ function AskDrawer({ close, navigate, initialQuestion, route }) {
     "Is an older house a bad idea?":"Age alone does not make a home a bad purchase. It may need more investigation, especially around roof, damp, wiring, plumbing and extensions.",
     "What is a sinking fund?":"For apartments, a sinking fund is money set aside by the management company for larger future repairs or works.",
   };
-  const [q,setQ]=useState(initialQuestion || Object.keys(answers)[0]);
+  const suggestions = Object.keys(answers);
+  const [q,setQ]=useState(initialQuestion || "");
   const [answer,setAnswer]=useState("");
   const [structured,setStructured]=useState(null);
   const [error,setError]=useState("");
@@ -87,27 +88,33 @@ function AskDrawer({ close, navigate, initialQuestion, route }) {
     return()=>window.removeEventListener("keydown",onKey);
   },[close]);
   const ask = async () => {
+    const question = q.trim();
+    if (!question) {
+      setError("Type a question or choose one of the suggested questions below.");
+      return;
+    }
     setLoading(true); setError("");
     try {
-      const result = await askHomePath(q, { route });
+      const result = await askHomePath(question, { route });
       setStructured(result);
-      setAnswer(result.answer || answers[q]);
+      setAnswer(result.answer || answers[question] || "I could not generate a full answer just now. Try one of the suggested questions below or check the related HomePath pages.");
     } catch {
       setError("HomePath’s live explanation service is temporarily unavailable. The local guidance library is being used.");
-      setAnswer(answers[q]);
+      setAnswer(answers[question] || "I can still help with common topics such as brokers, deposits, surveys, valuations, solicitors and viewing questions. Choose a suggested question below.");
     } finally {
       setLoading(false);
     }
   };
-  const clear=()=>{setAnswer("");setStructured(null);setError("");setFeedback("");};
+  const clear=()=>{setQ("");setAnswer("");setStructured(null);setError("");setFeedback("");};
   return <div className="drawer-backdrop" role="dialog" aria-modal="true" aria-label="Ask HomePath">
     <aside className="ask-drawer"><button className="drawer-close" onClick={close}>Close</button><p className="eyebrow">Not sure who to ask? Ask HomePath.</p><h2>Quick housing answers</h2><p>Ask a question about buying, housing supports, mortgages, legal steps or property condition. I’ll explain it in plain language and point you towards the right next step.</p>
       <p className="privacy-note">Your question may be processed by an external AI service to generate an answer. Do not include bank details, account numbers or other sensitive personal information.</p>
-      <select value={q} onChange={e=>{setQ(e.target.value);setAnswer("")}}>{Object.keys(answers).map(x=><option key={x}>{x}</option>)}</select>
+      <label className="ask-input"><span>Your question</span><textarea value={q} onChange={e=>setQ(e.target.value)} rows="4" placeholder="For example: Can I speak to a broker before finding a house?" /></label>
       <button className="guide-inline-button" onClick={ask} disabled={loading}>{loading ? "Asking…" : "Ask"}</button>
       {loading && <p role="status" aria-live="polite">Loading HomePath answer…</p>}
       {error && <p className="form-error">{error}</p>}
-      <div className="ask-answer" aria-live="polite">{answer || answers[q]} <small>{structured?.disclaimer || "Confirm anything important with a broker, lender, solicitor, surveyor or official provider."}</small></div>
+      {answer && <div className="ask-answer" aria-live="polite">{answer} <small>{structured?.disclaimer || "Confirm anything important with a broker, lender, solicitor, surveyor or official provider."}</small></div>}
+      <div className="ask-suggestions"><h3>Suggested questions</h3>{suggestions.slice(0,6).map(x=><button key={x} onClick={()=>{setQ(x);setAnswer("");setStructured(null);setError("");}}>{x}</button>)}</div>
       {structured?.officialSources?.length > 0 && <div className="source-list"><h3>Sources</h3>{structured.officialSources.map(s=><a key={s.url} href={s.url} target="_blank" rel="noreferrer">{s.label}</a>)}</div>}
       {structured?.suggestedActions?.length > 0 && <div className="source-list"><h3>Related HomePath actions</h3>{structured.suggestedActions.map(a=><button key={a.label} onClick={()=>{close();navigate(a.route)}}>{a.label}</button>)}</div>}
       <div className="ask-tools"><button onClick={ask} disabled={loading}>Retry</button><button onClick={clear}>Clear conversation</button></div>

@@ -4,11 +4,15 @@ import { readStore, writeStore } from "../lib/storage";
 
 const cards = [
   ["Check my position", "See what you may be able to borrow, how much cash you may need and which routes are worth checking.", "Start", "/check-position"],
-  ["Buying explained", "Understand the process, costs, people and paperwork involved in buying a home.", "Learn", "/buying-guide"],
+  ["Learn the basics", "Build your housing knowledge through short lessons and practical examples.", "Open Learning Centre", "/learn"],
   ["Check a house", "Paste a property listing or enter the details to understand the likely costs, risks and questions.", "Check", "/check-listing"],
-  ["Savings plan", "Set a target and see how your rent, regular savings and monthly commitments affect the journey.", "Plan", "/savings-plan"],
-  ["Ask HomePath", "Ask basic questions like who to speak to first, what happens next or how much cash you may need.", "Ask", "ask"],
-  ["Housing Pulse", "See what young people are telling us about housing and share your own experience.", "View pulse", "/housing-pulse"],
+];
+
+const quickLinks = [
+  ["Buying guide", "/buying-guide"],
+  ["Savings plan", "/savings-plan"],
+  ["Ask HomePath", "ask"],
+  ["Housing Pulse", "/housing-pulse"],
 ];
 
 export default function HomePage({ navigate }) {
@@ -17,11 +21,9 @@ export default function HomePage({ navigate }) {
   return <>
     <section className="hero">
       <div>
-        <p className="eyebrow">Clear housing and financial guidance for young people in the Republic of Ireland and Northern Ireland</p>
-        <h1>Making buying a home understandable.</h1>
-        <p className="hero-copy">Sometimes the biggest barrier is money.</p>
-        <p className="hero-copy compact">Sometimes it’s not knowing where to start. HomePath helps you understand the process, learn about your options and take the next realistic step.</p>
-        <p className="hero-copy compact">Affordability remains a major challenge, but confusing and fragmented information can make that challenge even harder to navigate.</p>
+        <p className="eyebrow">Clear housing guidance for the Republic of Ireland and Northern Ireland</p>
+        <h1>Not sure where you stand? Start here.</h1>
+        <p className="hero-copy">Check what you could roughly afford, learn the buying basics, and know what to ask before viewing a home.</p>
         {profile && <div className="home-personal"><strong>Your HomePath is saved on this device.</strong><span>Based on your target of a {profile.targetHomeType} near {profile.targetArea || "your area"}, your next useful step may be checking real listings or building the deposit further.</span></div>}
         {!confidence && <div className="confidence-card"><label><span>How confident do you currently feel about understanding your housing options?</span><select defaultValue="" onChange={e=>writeStore("homepath-confidence-start",{score:Number(e.target.value),date:new Date().toISOString()})}><option value="" disabled>Optional: choose 1–10</option>{[1,2,3,4,5,6,7,8,9,10].map(x=><option key={x} value={x}>{x} — {x===1?"Not at all confident":x===10?"Very confident":""}</option>)}</select></label><small>This stays on your device unless you later choose to share research data.</small></div>}
         <Disclaimer>General guidance only. Not mortgage, legal, financial, surveying or planning advice.</Disclaimer>
@@ -33,6 +35,9 @@ export default function HomePage({ navigate }) {
       <div className="action-grid">{cards.map(([title,text,button,href]) =>
         <article className="action-card" key={href}><h3>{title}</h3><p>{text}</p>
           <button onClick={() => href === "ask" ? window.dispatchEvent(new Event("homepath-open-ask")) : navigate(href)}>{button}<span>→</span></button></article>)}</div>
+      <div className="home-quick-links" aria-label="More HomePath tools">
+        {quickLinks.map(([label,href]) => <button key={label} onClick={() => href === "ask" ? window.dispatchEvent(new Event("homepath-open-ask")) : navigate(href)}>{label}<span>→</span></button>)}
+      </div>
       <p className="research-line">Based on our early research, the questions young people ask most are not only ‘Can I afford it?’ but also ‘Who do I speak to?’, ‘What happens next?’ and ‘How much cash do I actually need?’</p>
     </section>
   </>;
