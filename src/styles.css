@@ -3,6 +3,118 @@
 @media(max-width:760px){.app-shell{padding-bottom:72px}.header{height:66px;padding:0 20px}.desktop-nav{display:none}.bottom-nav{position:fixed;z-index:20;bottom:0;left:0;right:0;background:#fff;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}.bottom-nav a{font-size:10px;text-decoration:none;text-align:center;color:#707987;padding:9px 2px 8px}.bottom-nav a span{display:block;font-size:22px;line-height:20px;margin-bottom:4px}.bottom-nav a.active{color:var(--green);font-weight:700;background:#f3f8ef}.hero{padding:52px 20px 44px;display:block}.hero h1{font-size:43px}.hero-copy{font-size:16px}.hero-art{display:none}.actions{padding:43px 20px 48px}.section-intro{display:block}.action-grid{grid-template-columns:1fr}.action-card{min-height:235px}.why{padding:60px 22px}.page{padding:42px 20px 80px}.page-head{margin-bottom:30px}.page-head h1{font-size:42px}.page-head>p:last-child{font-size:16px}.form-card{padding:22px 17px}.form-grid{grid-template-columns:1fr;gap:20px}.field.full{grid-column:auto}.range-panel{grid-template-columns:1fr;padding:25px 20px;margin-bottom:45px}.range-panel h2{font-size:36px}.metrics{grid-template-columns:1fr}.metric{padding:15px}.result-section{margin:45px 0}.section-heading h2{font-size:24px}.scenario-list,.two-col,.flag-list{grid-template-columns:1fr}.next-steps{padding:25px 20px}.next-steps ol{grid-template-columns:1fr}.money-grid{grid-template-columns:1fr 1fr}.money-grid>div{border-bottom:1px solid var(--line)}.question-list{grid-template-columns:1fr}.question-list label:nth-child(odd){border-right:0}.advice-layout{grid-template-columns:1fr;gap:22px}.advice-note{display:none}.tabs button{flex:1;padding:14px 5px;font-size:13px}.accordion-body{grid-template-columns:1fr;padding-right:5px}.accordion-body aside{grid-column:auto}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
+/* HomePath Towers */
+.towers-page{max-width:1180px}
+.towers-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);gap:32px;align-items:center;background:var(--navy);color:#fff;padding:34px;border-radius:28px;margin-bottom:24px}
+.towers-hero h1{font:800 clamp(38px,6vw,68px)/1 Manrope,sans-serif;letter-spacing:-.055em;margin:0 0 16px}
+.towers-hero p{color:#dce4f3;line-height:1.6;max-width:660px}
+.towers-hero .eyebrow{color:#9bc892!important}
+.towers-personal{border-left:4px solid var(--pale);padding-left:14px;font-size:14px}
+.towers-continue{width:max-content;gap:24px}
+.tower-stats{display:grid;grid-template-columns:1fr 1fr 1.3fr 1.7fr;gap:12px;margin:18px 0}
+.tower-stats article{border:1px solid var(--line);padding:18px;background:#fff;display:grid;gap:6px}
+.tower-stats strong{font:800 22px Manrope,sans-serif;color:var(--navy);letter-spacing:-.03em}
+.tower-stats span{font-size:13px;color:#657080}
+.tower-overview{display:flex;justify-content:space-between;gap:20px;align-items:center;border:1px solid var(--line);padding:18px;margin-bottom:22px}
+.tower-overview .progress-track{flex:1;margin:0}
+.tower-overview .text-button{margin:0;white-space:nowrap}
+.tower-progress{margin:0;text-align:center}
+.tower-sky{background:#fff;border:1px solid #d9e2d2;border-radius:26px;min-height:330px;display:grid;place-items:end center;padding:26px;overflow:hidden}
+.tower-plot{position:relative;width:260px;height:260px}
+.tower-plot span{position:absolute;display:block}
+.tower-ground{left:18px;right:18px;bottom:18px;height:8px;background:#dceccf;border-radius:999px}
+.tower-foundation{left:48px;right:48px;bottom:38px;height:18px;border:3px solid var(--green);border-radius:6px;opacity:.28}
+.tower-foundation.built{opacity:1;background:#dceccf}
+.tower-ground-floor,.tower-first-floor,.tower-second-floor{left:62px;right:62px;border:3px solid var(--navy);background:#fff;opacity:.2}
+.tower-ground-floor{bottom:56px;height:62px}
+.tower-first-floor{bottom:115px;height:56px}
+.tower-second-floor{bottom:168px;height:46px}
+.tower-ground-floor.built,.tower-first-floor.built,.tower-second-floor.built{opacity:1}
+.tower-door{left:114px;bottom:56px;width:34px;height:48px;background:var(--green);border-radius:16px 16px 2px 2px;opacity:.22}
+.tower-door.built{opacity:1}
+.tower-window{width:26px;height:24px;border:3px solid var(--green);background:#eef7e9;opacity:.2}
+.tower-window.one{left:76px;bottom:78px}.tower-window.two{right:76px;bottom:78px}
+.tower-window.built{opacity:1}
+.tower-roof{left:49px;bottom:211px;width:162px;height:82px;background:var(--navy);clip-path:polygon(50% 0,100% 100%,0 100%);opacity:.2}
+.tower-roof.built{opacity:1}
+.tower-path{left:126px;bottom:0;width:82px;height:44px;background:var(--pale);clip-path:polygon(0 0,46% 0,100% 100%,22% 100%);opacity:.25}
+.tower-path.built{opacity:1}
+.tower-progress figcaption{margin-top:10px;color:inherit;font-weight:800}
+.towers-hero .tower-progress figcaption{color:#dce4f3}
+.tower-sections{display:grid;gap:16px}
+.tower-section-card{border:1px solid var(--line);display:grid;grid-template-columns:270px 1fr;gap:20px;padding:20px;background:#fff}
+.tower-section-card>div:first-child{border-left:5px solid var(--green);padding-left:16px}
+.tower-section-card span{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--green);font-weight:800}
+.tower-section-card h2{font:800 24px Manrope,sans-serif;color:var(--navy);letter-spacing:-.035em;margin:8px 0}
+.tower-section-card p{color:#657080;line-height:1.45}
+.tower-module-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tower-module-list button,.planned-topic{border:1px solid var(--line);background:#fff;text-align:left;padding:14px;color:var(--navy);display:grid;gap:5px;margin:0}
+.tower-module-list button.done{border-color:var(--green);background:#f3f8ef}
+.tower-module-list button strong{font-weight:800}
+.tower-module-list small,.planned-topic small{color:#657080;font-size:12px}
+.planned-topic{background:#fafcf8;color:#4f5968}
+.lesson-page{max-width:1180px}
+.lesson-head h1{font:800 clamp(34px,5vw,58px)/1.05 Manrope,sans-serif;color:var(--navy);letter-spacing:-.05em;margin:0 0 18px}
+.lesson-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
+.lesson-card{border:1px solid var(--line);box-shadow:0 18px 45px #0d1b3d0c;background:#fff;padding:26px;min-height:440px}
+.lesson-screen{min-height:250px}
+.lesson-screen>p:last-child{font-size:20px;line-height:1.55;color:#344055}
+.teaching-card{background:#f8fbf6;border-left:5px solid var(--green);padding:22px}
+.question-frame h2,.lesson-summary h2,.building-reward h2{font:800 28px Manrope,sans-serif;color:var(--navy);letter-spacing:-.035em;margin:0 0 18px}
+.choice-grid{display:grid;gap:10px}
+.choice-grid button{border:1px solid var(--line);background:#fff;padding:15px;text-align:left;color:var(--navy);font-weight:800}
+.choice-grid button:hover,.choice-grid button:focus-visible,.tower-module-list button:focus-visible,.inspection-choices button:focus-visible{border-color:var(--green);box-shadow:0 0 0 3px #dceccf;outline:0}
+.feedback-panel{border-left:4px solid #a44c38;background:#faf5f3;color:#5d342d;padding:14px;margin-top:16px}
+.feedback-panel.correct{border-left-color:var(--green);background:#edf5e8;color:#234c32}
+.feedback-panel p{margin:6px 0 0;line-height:1.45}
+.lesson-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;border-top:1px solid var(--line);padding-top:18px}
+.lesson-actions .guide-inline-button{background:#fff;color:var(--green);border:1px solid var(--green)}
+.lesson-actions button:disabled{opacity:.5;cursor:not-allowed}
+.match-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:12px 0;font-weight:800;color:var(--navy)}
+.match-row select{padding:12px;border:1px solid #cfd4dc;background:#fff}
+.ordered-answer{background:#f8fbf6;border:1px solid var(--line);min-height:70px;padding:18px 18px 18px 38px}
+.ordered-answer li{padding:5px 0;color:var(--navy);font-weight:800}
+.lesson-side{display:grid;gap:16px;position:sticky;top:18px}
+.lesson-side .tower-sky{min-height:300px}
+.building-reward{border:1px solid var(--line);padding:18px;background:#fff}
+.source-list{display:grid;gap:8px;margin-top:16px}
+.source-list a{border:1px solid var(--line);padding:10px 12px;text-decoration:none;font-weight:800;color:var(--navy)}
+.inspection-grid{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:start}
+.mini-house{position:relative;height:220px;background:#f8fbf6;border:1px solid var(--line);overflow:hidden}
+.mini-house span{position:absolute;display:block}
+.mini-house .roof{left:42px;top:28px;width:140px;height:75px;background:var(--navy);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.mini-house .chimney{right:55px;top:32px;width:20px;height:45px;background:var(--green)}
+.mini-house .walls{left:52px;top:96px;width:118px;height:88px;border:4px solid var(--navy);background:#fff}
+.mini-house .window{width:25px;height:24px;border:3px solid var(--green);top:124px}.mini-house .window.left{left:68px}.mini-house .window.right{right:68px}
+.mini-house .door{left:98px;top:136px;width:32px;height:48px;background:var(--green);border-radius:14px 14px 0 0}
+.mini-house .path{left:108px;top:184px;width:78px;height:38px;background:var(--pale);clip-path:polygon(0 0,40% 0,100% 100%,25% 100%)}
+.inspection-choices{display:grid;gap:8px}
+.inspection-choices button{border:1px solid var(--line);background:#fff;text-align:left;padding:11px;color:var(--navy)}
+.inspection-choices button.selected{border-color:var(--green);background:#edf5e8}
+.inspection-choices small{display:block;color:#657080;line-height:1.35;margin-top:4px}
+.lesson-summary p{font-size:19px;line-height:1.55;color:#344055}
+
+@media(max-width:900px){
+  .towers-hero,.lesson-grid,.tower-section-card{grid-template-columns:1fr}
+  .tower-stats{grid-template-columns:1fr 1fr}
+  .lesson-side{position:static;grid-row:1}
+}
+
+@media(max-width:760px){
+  .towers-hero{padding:24px 18px;border-radius:18px}
+  .tower-stats,.tower-module-list,.inspection-grid,.match-row{grid-template-columns:1fr}
+  .tower-overview{display:grid}
+  .tower-sky{min-height:270px;padding:14px}
+  .tower-plot{transform:scale(.86)}
+  .lesson-card{padding:18px;min-height:auto}
+  .lesson-screen{min-height:auto}
+  .lesson-screen>p:last-child{font-size:17px}
+  .lesson-actions{display:grid}
+  .lesson-actions .primary,.lesson-actions .guide-inline-button{width:100%}
+  .inspection-grid{gap:12px}
+  .mini-house{height:190px}
+}
+
 /* HomePath identity */
 .brand{gap:10px;font-weight:700;letter-spacing:-.045em;color:inherit}
 .brand b{color:var(--navy);font-weight:700}
