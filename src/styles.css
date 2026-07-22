@@ -298,7 +298,7 @@
 .module-card>div{padding:0 18px 18px}
 .scenario-card{background:#edf5e8;padding:16px;margin:14px 0}
 .answer{border-left:4px solid var(--green);padding-left:12px;color:#334235}
-.mode-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.mode-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:22px}
 .mode-tabs button{border:1px solid var(--line);background:#fff;padding:12px;font-weight:800;color:var(--navy)}
 .mode-tabs button.active{background:var(--green);color:#fff;border-color:var(--green)}
 .url-warning{margin-bottom:20px}

@@ -64,7 +64,8 @@ export function calculatePosition(data) {
 
 export function analyseListing(data) {
   const text = (data.description || "").toLowerCase();
-  const ni = /belfast|derry|londonderry|newry|lisburn|antrim|down|armagh|tyrone|fermanagh/.test((data.location || "").toLowerCase()) ||
+  const place = `${data.location || ""} ${data.address || ""}`;
+  const ni = /belfast|derry|londonderry|newry|lisburn|antrim|down|armagh|tyrone|fermanagh|bt[0-9]/.test(place.toLowerCase()) ||
     ["propertypal", "propertynews"].includes(data.site);
   const price = Number(data.price) || 0;
   const flags = [
