@@ -1,3 +1,5 @@
+import { estimateBuyingCosts } from "./buyingCosts";
+
 export const money = (value, jurisdiction = "roi") =>
   new Intl.NumberFormat("en-IE", {
     style: "currency",
@@ -50,7 +52,7 @@ export function calculatePosition(data) {
   const purchaseHigh = Math.floor(Math.max(0, Math.min(maxByCash, maxByLoan)) / 5000) * 5000;
   const purchaseLow = Math.max(0, purchaseHigh - 10000);
   const target = Number(data.target) || purchaseHigh;
-  const costs = target * .01 + fixedCosts;
+  const costs = estimateBuyingCosts({ price: target, jurisdiction: "roi", depositPercent: 10 }).nonDepositCosts;
   return {
     jurisdiction: "roi", income, savings, monthlySavings, monthlyRent,
     monthlyPension, demonstratedMonthly, repaymentSupportedLoan,
@@ -64,9 +66,8 @@ export function calculatePosition(data) {
 
 export function analyseListing(data) {
   const text = (data.description || "").toLowerCase();
-  const place = `${data.location || ""} ${data.address || ""}`;
-  const ni = /belfast|derry|londonderry|newry|lisburn|antrim|down|armagh|tyrone|fermanagh|bt[0-9]/.test(place.toLowerCase()) ||
-    ["propertypal", "propertynews"].includes(data.site);
+  const place = `${data.location || ""}`;
+  const ni = data.jurisdiction === "ni" || /belfast|derry|londonderry|newry|lisburn|antrim|down|armagh|tyrone|fermanagh|bt[0-9]/.test(place.toLowerCase());
   const price = Number(data.price) || 0;
   const flags = [
     ["in need of modernisation", "Budget for more than decoration and ask when the wiring, heating and roof were last updated."],
@@ -85,14 +86,14 @@ export function analyseListing(data) {
     ["management fees", "Ask for the annual amount, accounts, sinking fund and planned works."],
   ].filter(([term]) => text.includes(term));
   let level = "low", bufferRate = .015;
-  if (/cash buyers|derelict|unmortgageable|major renovation/.test(text) || data.work === "major") [level, bufferRate] = ["very high", .2];
-  else if (/requires refurbishment|vacant/.test(text) || data.work === "some") [level, bufferRate] = ["high", .12];
-  else if (/modernisation|excellent potential/.test(text) || data.work === "cosmetic") [level, bufferRate] = ["medium", .05];
+  if (/cash buyers|derelict|unmortgageable|major renovation/.test(text) || data.work === "major" || data.condition === "major" || data.occupied === "derelict") [level, bufferRate] = ["very high", .2];
+  else if (/requires refurbishment|vacant/.test(text) || data.work === "some" || data.condition === "renovation" || data.occupied === "vacant") [level, bufferRate] = ["high", .12];
+  else if (/modernisation|excellent potential/.test(text) || data.work === "cosmetic" || data.condition === "dated") [level, bufferRate] = ["medium", .05];
   return {
     ni, price, flags, level,
     depositLow: price * (ni ? .05 : .1),
     depositHigh: price * .1,
-    costs: ni ? 4200 : price * .01 + 6300,
+    costs: estimateBuyingCosts({ price, jurisdiction: ni ? "ni" : "roi", depositPercent: ni ? 5 : 10 }).nonDepositCosts,
     renovationLow: price * bufferRate,
     renovationHigh: price * bufferRate * 1.5,
   };

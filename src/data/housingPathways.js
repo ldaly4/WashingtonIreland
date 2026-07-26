@@ -12,7 +12,7 @@ export const fitLabels = {
   worth: "Worth checking",
   maybe: "May be relevant",
   longer: "Longer-term possibility",
-  unlikely: "Less likely based on current information",
+  unlikely: "Longer-term possibility",
   unknown: "Not enough information",
 };
 
@@ -87,7 +87,7 @@ function profileFlags(profile = {}) {
 }
 
 function pathway(id, name, jurisdiction, source, fields) {
-  return { id, name, jurisdiction, source: { label: source[0], url: source[1] }, ...fields };
+  return { id, name, jurisdiction, source: { label: source[0], url: source[1], lastReviewed: "26 July 2026" }, ...fields };
 }
 
 export const housingPathways = [

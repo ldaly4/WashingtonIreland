@@ -66,6 +66,14 @@ export default function Layout({ path, navigate, children }) {
 
 function AskDrawer({ close, navigate, initialPayload = {}, route }) {
   const answers = {
+    "Where should I start?":"Start by checking your rough position, then learn the main steps, then compare real homes carefully. You do not need to know everything before taking the first small step.",
+    "Could social housing be relevant to me?":"It may be relevant if your income, household circumstances or housing need fit official rules. HomePath cannot decide eligibility, so the next step is to check your local authority or Housing Executive route.",
+    "What is the difference between social housing and HAP?":"Social housing usually means a local authority or approved housing body home. HAP is support with rent in private rented accommodation for people assessed for housing support. Rules and local decisions matter.",
+    "What is Cost Rental?":"Cost Rental is a renting route where rent is linked to the cost of providing the home rather than open-market rent. It is not a route to ownership, and availability can be limited.",
+    "What does a mortgage broker do?":"A broker or adviser may help estimate borrowing, compare providers, explain documents and assist with an application. Ask how they are paid before proceeding.",
+    "What is the difference between a valuation and a survey?":"A lender valuation is mainly for the lender. An independent survey is for you and checks property condition in more detail.",
+    "Explain my HomePath results.":"HomePath results are rough estimates, not a mortgage offer. The key things to compare are buying range, upfront cash needed, savings gap and which routes are worth checking.",
+    "What should I do next?":"Pick one next step: check your rough position, speak to a broker or official housing route, or use Check a House on a real listing.",
     "Who should I contact first?":"If you are unsure where you stand, a mortgage broker, adviser or lender is often a useful first conversation. You can speak to them before finding a house. If your question is legal, speak to a solicitor or conveyancer. If it is about condition, speak to a surveyor.",
     "What does approval in principle mean?":"It is an early indication of what a lender may offer. It is not final approval and it is not tied to every property.",
     "Can I speak to a broker before finding a house?":"Yes. Speaking to a broker is an information-gathering step. It does not commit you to a mortgage.",
@@ -118,7 +126,7 @@ function AskDrawer({ close, navigate, initialPayload = {}, route }) {
   return <div className="drawer-backdrop" role="dialog" aria-modal="true" aria-label="Ask HomePath">
     <aside className="ask-drawer"><button className="drawer-close" onClick={close}>Close</button><p className="eyebrow">Not sure who to ask? Ask HomePath.</p><h2>Quick housing answers</h2><p>Ask a question about buying, housing supports, mortgages, legal steps or property condition. I’ll explain it in plain language and point you towards the right next step.</p>
       <p className="privacy-note">Your question may be processed by an external AI service to generate an answer. Do not include bank details, account numbers, PPS numbers, National Insurance numbers or other sensitive personal information.</p>
-      <label className="ask-input"><span>Your question</span><textarea value={q} onChange={e=>setQ(e.target.value)} rows="4" placeholder="For example: Can I speak to a broker before finding a house?" /></label>
+      <label className="ask-input"><span>Your question</span><textarea value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();ask();}}} rows="4" placeholder="For example: Could social housing be relevant to me?" /></label>
       <button className="guide-inline-button" onClick={ask} disabled={loading}>{loading ? "Asking…" : "Ask"}</button>
       {loading && <p role="status" aria-live="polite">Loading HomePath answer…</p>}
       {error && <p className="form-error">{error}</p>}

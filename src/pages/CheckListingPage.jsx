@@ -3,36 +3,38 @@ import { PageHead, Disclaimer } from "../components/Layout";
 import { analyseListing, money } from "../lib/calculations";
 import { analyseListingWithAdapter } from "../services/listingAnalysis";
 import { readStore, writeStore } from "../lib/storage";
+import { estimateBuyingCosts } from "../lib/buyingCosts";
 
-const initial = {mode:"url",url:"",address:"",site:"daft",price:"",location:"",bedrooms:"2",type:"house",energy:"",description:"",work:"none"};
+const initial = {mode:"text",jurisdiction:"roi",price:"",location:"",bedrooms:"2",type:"house",floorArea:"",energy:"",age:"unknown",occupied:"unknown",condition:"unknown",description:"",work:"none"};
 const questions = ["When was it last rewired?","What type of heating system is there?","Has there been damp, leaks or roof work?","Are there planning or boundary issues?","Are there management fees?","Is it mortgageable in its current condition?","What is included in the sale?","Have there been offers already?"];
 
 export default function CheckListingPage() {
   const [data,setData]=useState(initial), [result,setResult]=useState(null), [loading,setLoading]=useState(false), [error,setError]=useState("");
   const set=k=>e=>setData({...data,[k]:e.target.value});
-  const canSubmit = data.mode === "url" ? data.url.trim()
-    : data.mode === "address" ? data.address.trim()
-    : data.mode === "text" ? data.description.trim()
+  const canSubmit = data.mode === "text" ? data.description.trim()
     : Number(data.price) > 0 && data.location.trim();
   if(result) return <ListingResults data={data} r={result} edit={()=>setResult(null)}/>;
-  return <div className="page compact-page"><PageHead eyebrow="Listing check" title="Check a listing">Paste a property link, write the address, paste listing text or enter the details yourself. You only need to fill in the fields for the option you choose.</PageHead>
+  return <div className="page compact-page"><PageHead eyebrow="Check a house" title="Check a house">Paste the estate-agent description or enter the main details yourself. HomePath cannot inspect a property from a link.</PageHead>
     <form className="form-card" onSubmit={async e=>{e.preventDefault();setLoading(true);setError("");const out=await analyseListingWithAdapter(data, analyseListing);setLoading(false);setError(out.error||"");setResult(out.result);window.scrollTo(0,0)}}>
       <div className="form-progress"><span>Listing details</span><span>About 2 minutes</span></div>
-      <div className="mode-tabs"><button type="button" className={data.mode==="url"?"active":""} onClick={()=>setData({...data,mode:"url"})}>Paste Daft/link</button><button type="button" className={data.mode==="address"?"active":""} onClick={()=>setData({...data,mode:"address"})}>Address or search</button><button type="button" className={data.mode==="text"?"active":""} onClick={()=>setData({...data,mode:"text"})}>Paste listing text</button><button type="button" className={data.mode==="manual"?"active":""} onClick={()=>setData({...data,mode:"manual"})}>Enter info</button></div>
-      {data.mode==="url" && <div className="plain-card url-warning"><label className="field"><span>Property link</span><input required value={data.url} onChange={set("url")} placeholder="Paste a Daft, MyHome, PropertyPal or PropertyNews link" /></label><p>Paste the link and HomePath will try the secure analysis service. If the page blocks reading, you will still get a viewing checklist and can add details later.</p></div>}
-      {data.mode==="address" && <div className="plain-card url-warning"><label className="field"><span>Address, Eircode, postcode or rough search</span><input required value={data.address} onChange={set("address")} placeholder="e.g. 3-bed near Swords, Dublin or BT9 Belfast" /></label><p>You do not need the full listing details for this. HomePath will give you a practical checklist based on what you entered.</p></div>}
+      <p className="privacy-note">HomePath cannot inspect a property from a link. Paste the description or enter the main details instead.</p>
+      <div className="mode-tabs"><button type="button" className={data.mode==="text"?"active":""} onClick={()=>setData({...data,mode:"text"})}>Paste listing description</button><button type="button" className={data.mode==="manual"?"active":""} onClick={()=>setData({...data,mode:"manual"})}>Enter details manually</button></div>
       {(data.mode==="text" || data.mode==="manual") && <div className="form-grid">
-        <label className="field"><span>Listing site</span><select value={data.site} onChange={set("site")}><option value="daft">Daft</option><option value="myhome">MyHome</option><option value="propertypal">PropertyPal</option><option value="propertynews">PropertyNews</option><option value="other">Other</option></select></label>
+        <label className="field"><span>Jurisdiction</span><select value={data.jurisdiction} onChange={set("jurisdiction")}><option value="roi">Republic of Ireland</option><option value="ni">Northern Ireland</option></select></label>
         <label className="field"><span>Asking price</span><div className="money-input"><span>€ / £</span><input required={data.mode==="manual"} type="number" min="0" value={data.price} onChange={set("price")}/></div></label>
         <label className="field"><span>Location</span><input required={data.mode==="manual"} placeholder="Town, city or area" value={data.location} onChange={set("location")}/></label>
         <label className="field"><span>Number of bedrooms</span><select value={data.bedrooms} onChange={set("bedrooms")}>{[1,2,3,4,5].map(x=><option key={x}>{x}</option>)}</select></label>
         <label className="field"><span>Property type</span><select value={data.type} onChange={set("type")}><option value="house">House</option><option value="apartment">Apartment</option><option value="bungalow">Bungalow</option><option value="site">Site / self-build</option><option value="other">Other</option></select></label>
-        <label className="field"><span>Energy rating / BER</span><input placeholder="e.g. C2, if known" value={data.energy} onChange={set("energy")}/></label>
-        {data.mode==="text" && <label className="field full"><span>Paste listing description</span><textarea required rows="7" placeholder="Paste the main description here. We will look for wording worth a closer look." value={data.description} onChange={set("description")}/></label>}
-        <label className="field full"><span>How much work are you willing to take on?</span><select value={data.work} onChange={set("work")}><option value="none">None</option><option value="cosmetic">Painting and cosmetic work</option><option value="some">Some renovation</option><option value="major">Major renovation if the numbers work</option><option value="support">I have family or trade support</option></select></label>
+        <label className="field"><span>Approximate floor area, if known</span><input placeholder="e.g. 82 sq m" value={data.floorArea} onChange={set("floorArea")}/></label>
+        <label className="field"><span>BER or EPC, if known</span><input placeholder="e.g. C2 or EPC D" value={data.energy} onChange={set("energy")}/></label>
+        <label className="field"><span>Year or age category, if known</span><select value={data.age} onChange={set("age")}><option value="unknown">Unknown</option><option value="new">New or near-new</option><option value="2000s">Built after 2000</option><option value="1970-1999">1970–1999</option><option value="pre-1970">Pre-1970</option><option value="period">Period or traditional home</option></select></label>
+        <label className="field"><span>Does the home appear occupied?</span><select value={data.occupied} onChange={set("occupied")}><option value="unknown">Unknown</option><option value="occupied">Appears occupied</option><option value="vacant">Appears vacant</option><option value="derelict">Appears derelict or uninhabitable</option></select></label>
+        <label className="field"><span>Current condition</span><select value={data.condition} onChange={set("condition")}><option value="unknown">Unknown</option><option value="move-in">Looks move-in ready</option><option value="dated">Dated but habitable</option><option value="renovation">Needs renovation</option><option value="major">Needs major work</option></select></label>
+        <label className="field"><span>Your renovation goal</span><select value={data.work} onChange={set("work")}><option value="none">Move in with little work</option><option value="cosmetic">Cosmetic refresh</option><option value="some">Modern family home over time</option><option value="major">Major renovation if the numbers work</option><option value="support">I have family or trade support</option></select></label>
+        <label className="field full"><span>Paste the estate-agent description</span><textarea required={data.mode==="text"} rows="7" placeholder="Paste the main description here. We will look for wording worth a closer look." value={data.description} onChange={set("description")}/></label>
       </div>}
       {error && <p className="form-error">{error}</p>}
-      <button className="primary wide" type="submit" disabled={loading || !canSubmit}>{loading?"Checking…":"Check this listing"} <span>→</span></button><p className="privacy-note">Do not include private contact, bank or account details. Link and address checks may be approximate if the listing page cannot be read.</p>
+      <button className="primary wide" type="submit" disabled={loading || !canSubmit}>{loading?"Checking…":"Check this house"} <span>→</span></button><p className="privacy-note">Do not include exact addresses, private contact details, bank details, PPS numbers or National Insurance numbers.</p>
     </form>
   </div>
 }
@@ -41,7 +43,7 @@ function ListingResults({data,r,edit}) {
   const j=r.ni?"ni":"roi", m=n=>money(n,j);
   const hasPrice = Number(r.price) > 0;
   const profile = readStore("homepath-profile");
-  const place = data.location || data.address || data.url || "Location not entered";
+  const place = data.location || "Location not entered";
   const text = `${data.description || ""} ${data.address || ""}`.toLowerCase();
   const energy = data.energy || r.ai?.extracted?.energyRating || "Unknown";
   const deposit = hasPrice ? (r.ni ? r.depositHigh : r.depositHigh) : 0;
@@ -115,7 +117,7 @@ function ListingResults({data,r,edit}) {
 }
 
 function MissingPrice() {
-  return <div className="plain-card"><h3>Add the asking price when you have it</h3><p>HomePath can give viewing questions from a link or address, but cash estimates and repayment illustrations need an asking price.</p></div>;
+  return <div className="plain-card"><h3>Add the asking price when you have it</h3><p>HomePath can give viewing questions from pasted wording or manual details, but cash estimates and repayment illustrations need an asking price.</p></div>;
 }
 
 function monthlyRepayment(principal, annualRate, years) {
@@ -126,18 +128,7 @@ function monthlyRepayment(principal, annualRate, years) {
 
 function buyingCostBreakdown(r, jurisdiction, deposit) {
   const price = r.price || 0;
-  const stamp = jurisdiction === "ni" ? 0 : price * .01;
-  return [
-    ["Deposit", deposit, jurisdiction === "ni" ? "Illustrated at 10%. Some routes may use a different deposit." : "Illustrated at 10% of the purchase price."],
-    [jurisdiction === "ni" ? "SDLT" : "Stamp Duty", stamp, jurisdiction === "ni" ? "May be nil or payable depending on price, buyer status and current rules." : "Illustrated at 1% for a standard purchase."],
-    ["Solicitor", 2500, "Legal work, contracts, title and completion or closing."],
-    ["Survey", 650, "Independent inspection of the property's condition."],
-    ["Mortgage valuation", 200, "Valuation primarily for the lender."],
-    ["Home insurance", 450, "Buildings insurance or initial home cover."],
-    ["Mortgage protection", jurisdiction === "ni" ? 0 : 350, "Often required in the Republic of Ireland; confirm with your lender or broker."],
-    ["Moving costs", 1000, "Van, movers, utility setup and practical move-in costs."],
-    ["Initial contingency", Math.max(2500, price * .01), "A starting buffer for early repairs, setup and unknowns."],
-  ].map(([label,amount,note])=>({label,amount,note}));
+  return estimateBuyingCosts({ price, jurisdiction, depositPercent: price ? deposit / price * 100 : undefined }).items.map(item => ({ label: item.label, amount: item.amount, note: item.note }));
 }
 
 function moveStatus(r, text) {
@@ -161,7 +152,7 @@ function whyReasons(data, r, energy, text) {
   if (/modernisation|dated|excellent potential|requires refurbishment/.test(text)) reasons.push("The wording suggests the home may benefit from updating, but the exact condition cannot be confirmed from the listing.");
   if (energy && energy !== "Unknown") reasons.push("The BER/EPC suggests energy improvements may be worth checking against comfort, running costs and grant criteria.");
   if (!/renovated|turnkey|newly renovated/.test(text)) reasons.push("The listing does not clearly state that recent major refurbishment has been completed.");
-  if (data.mode === "url" || data.mode === "address") reasons.push("Only limited information was entered, so the result focuses on what to check next rather than assuming defects.");
+  if (data.mode === "manual") reasons.push("Only structured details were entered, so the result focuses on what to check next rather than assuming defects.");
   reasons.push("The listing alone cannot confirm the condition of the roof, wiring, plumbing, damp, rot or structure.");
   return reasons;
 }

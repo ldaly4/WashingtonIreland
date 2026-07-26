@@ -350,7 +350,7 @@ const lessonModules = [
   },
   {
     id: "closing-day",
-    title: "What happens on closing day?",
+    title: "Solicitors, contracts and closing",
     category: "roof",
     jurisdiction: "both",
     estimatedMinutes: 5,

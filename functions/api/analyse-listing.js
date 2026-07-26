@@ -45,7 +45,7 @@ const schema = {
   required: ["extracted","summary","listingPhrases","conditionChecks","renovationCategory","viewingQuestions","professionalChecks","relatedModules","warnings","needsManualInput"],
 };
 
-function manualResponse(message = "We could not read this listing automatically. Paste the listing description or enter the main details instead.") {
+function manualResponse(message = "Paste the listing description or enter the main details before using the listing checker.") {
   return { needsManualInput: true, message };
 }
 
@@ -62,15 +62,12 @@ export async function onRequestPost({ request, env }) {
   const { body, error } = await readJson(request, headers, 26000);
   if (error) return error;
 
-  const listingUrl = String(body?.listingUrl || "").slice(0, 2000);
   const listingText = stripContactInfo(body?.listingText || body?.listing?.description || "").slice(0, 15000);
   const manual = body?.manualDetails || body?.listing || {};
-  if (listingUrl && !listingText && !manual?.askingPrice && !manual?.price) return json(manualResponse(), 200, headers);
   if (!listingText && !manual?.askingPrice && !manual?.price && !manual?.location) return errorResponse("EMPTY_LISTING", "Paste listing text or enter the main details before analysing.", 400, headers);
 
   const safeInput = {
     jurisdiction: String(body?.jurisdiction || "").slice(0, 20),
-    listingUrl: listingUrl ? "[URL supplied; not fetched]" : "",
     listingText,
     manualDetails: {
       askingPrice: Number(manual.askingPrice || manual.price) || null,

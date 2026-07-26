@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { PageHead, Disclaimer } from "../components/Layout";
 import { calculatePosition, money } from "../lib/calculations";
-import { saveHomePath, researchInviteState, setResearchInvite } from "../lib/storage";
+import { saveHomePath } from "../lib/storage";
 import CostsBeyondDeposit from "../components/CostsBeyondDeposit";
 import { explainResults } from "../services/explainResults";
 import { broadPathwayInputs, getRelevantHousingPathways } from "../data/housingPathways";
 
-const initial = { jurisdiction:"roi", area:"", buying:"alone", income:"", monthlySavings:"", monthlyRent:"", monthlyPension:"", savings:"", firstTime:"yes", housing:"renting", home:"3-bed", renovation:"none", target:"", householdSize:"1", dependentChildren:"0", localAuthority:"", housingUrgency:"stable", accessibilityNeed:"no", housingGoal:"buy", previouslyOwned:"no", receivesHousingSupport:"no", research:false };
+const initial = { jurisdiction:"roi", area:"", buying:"alone", income:"", monthlySavings:"", monthlyRent:"", monthlyPension:"", savings:"", firstTime:"yes", housing:"renting", home:"3-bed", renovation:"none", target:"", householdSize:"1", dependentChildren:"0", localAuthority:"", housingUrgency:"stable", accessibilityNeed:"no", housingGoal:"buy", previouslyOwned:"no", receivesHousingSupport:"no" };
 const savedCheck = () => {
   try {
     const saved = sessionStorage.getItem("homepath-position");
@@ -20,14 +20,24 @@ export default function CheckPositionPage() {
   const saved = savedCheck();
   const [data, setData] = useState(saved?.data || initial);
   const [result, setResult] = useState(saved?.showResult ? calculatePosition(saved.data) : null);
+  const [entryMode,setEntryMode]=useState("guided");
+  const [situationText,setSituationText]=useState("");
+  const [understood,setUnderstood]=useState(null);
   const set = key => e => setData({...data, [key]: e.target.type === "checkbox" ? e.target.checked : e.target.value});
   const submit = e => {
-    e.preventDefault();
+    e?.preventDefault?.();
     const next = calculatePosition(data);
     sessionStorage.setItem("homepath-position", JSON.stringify({data, showResult:true}));
     saveHomePath(data, next);
     setResult(next);
     window.scrollTo({top:0, behavior:"smooth"});
+  };
+  const parseSituation = e => {
+    e.preventDefault();
+    const parsed = parseSituationText(situationText);
+    const next = { ...data, ...parsed.fields };
+    setData(next);
+    setUnderstood(parsed.summary);
   };
   const edit = () => {
     sessionStorage.setItem("homepath-position", JSON.stringify({data, showResult:false}));
@@ -35,6 +45,13 @@ export default function CheckPositionPage() {
   };
   if (result) return <PositionResults data={data} r={result} edit={edit} />;
   return <div className="page compact-page"><PageHead eyebrow="Position check" title="Check your position">Answer a few questions and get a rough starting point for what may be realistic.</PageHead>
+    <div className="mode-tabs entry-tabs"><button type="button" className={entryMode==="guided"?"active":""} onClick={()=>setEntryMode("guided")}>Guided questions</button><button type="button" className={entryMode==="describe"?"active":""} onClick={()=>setEntryMode("describe")}>Describe my situation</button></div>
+    {entryMode === "describe" && <form className="form-card situation-card" onSubmit={parseSituation}>
+      <label className="field full"><span>Tell us about your housing situation</span><small>HomePath will suggest structured fields for you to check. It will not decide eligibility from this text.</small><textarea rows="7" value={situationText} onChange={e=>setSituationText(e.target.value)} placeholder="I’m 26, earn €38,000, live with my parents in Cork, have €12,000 saved and would consider buying, Cost Rental or social housing." /></label>
+      <button className="primary wide" type="submit" disabled={!situationText.trim()}>Suggest fields <span>→</span></button>
+      {understood && <section className="plain-card understood-card"><h2>We understood the following:</h2><dl>{understood.map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><div className="pathway-actions"><button type="button" onClick={submit}>Correct — show my starting point</button><button type="button" onClick={()=>setEntryMode("guided")}>Edit details</button></div><p className="privacy-note">Sensitive details are not inferred. If something is missing, use Edit details before continuing.</p></section>}
+    </form>}
+    {entryMode === "guided" && <>
     <form className="form-card" onSubmit={submit}>
       <div className="form-progress"><span>About you</span><span>A few practical figures</span></div>
       <div className="form-grid">
@@ -60,11 +77,44 @@ export default function CheckPositionPage() {
         <Field label="Are you open to a home that needs work?"><Select value={data.renovation} onChange={set("renovation")} options={[["none","No"],["cosmetic","Cosmetic work only"],["some","Some renovation"],["yes","Yes, if it makes the numbers work"]]}/></Field>
         <Field label="Target property price" hint="Optional, if you have one in mind"><div className="money-input"><span>{data.jurisdiction === "ni" ? "£" : "€"}</span><input min="0" type="number" value={data.target} onChange={set("target")} /></div></Field>
       </div>
-      <label className="check"><input type="checkbox" checked={data.research} onChange={set("research")} /> <span>I am happy for my anonymous answers to contribute to housing research.</span></label>
       <button className="primary wide" type="submit">Show my starting point <span>→</span></button>
       <p className="privacy-note">Your answers stay in this browser tab so the result does not disappear. Nothing is sent anywhere.</p>
     </form>
+    </>}
   </div>;
+}
+
+function parseSituationText(text) {
+  const lower = text.toLowerCase();
+  const euro = text.match(/€\s?([\d,]+)/) || text.match(/eur\s?([\d,]+)/i);
+  const pound = text.match(/£\s?([\d,]+)/) || text.match(/gbp\s?([\d,]+)/i);
+  const moneyMatches = [...text.matchAll(/[€£]\s?([\d,]+)/g)].map(match => Number(match[1].replace(/,/g,""))).filter(Boolean);
+  const incomeMatch = lower.match(/earn(?:ing|s)?\s*[€£]?\s?([\d,]+)/) || lower.match(/income\s*(?:is|of)?\s*[€£]?\s?([\d,]+)/);
+  const savedMatch = lower.match(/(?:saved|savings|deposit)\s*(?:of|is|are)?\s*[€£]?\s?([\d,]+)/);
+  const fields = {};
+  if (pound || /\b(belfast|derry|londonderry|lisburn|newry|northern ireland| ni\b|bt\d)/i.test(text)) fields.jurisdiction = "ni";
+  if (euro || /\b(cork|dublin|galway|limerick|waterford|republic|ireland)\b/i.test(text)) fields.jurisdiction = "roi";
+  const location = text.match(/\b(?:in|near|around|outside)\s+([A-Z][A-Za-z\s]+?)(?:,|\.|\sand|\swith|\shave|\searn|$)/);
+  if (location) fields.area = location[1].trim();
+  if (incomeMatch) fields.income = incomeMatch[1].replace(/,/g,"");
+  else if (moneyMatches[0]) fields.income = String(moneyMatches[0]);
+  if (savedMatch) fields.savings = savedMatch[1].replace(/,/g,"");
+  else if (moneyMatches[1]) fields.savings = String(moneyMatches[1]);
+  if (/parents|family|mum|mam|dad/.test(lower)) fields.housing = "family";
+  else if (/rent|renting|landlord/.test(lower)) fields.housing = "renting";
+  if (/social housing|council housing|housing executive/.test(lower)) fields.receivesHousingSupport = "yes";
+  if (/cost rental|renting|social housing|hap/.test(lower) && /buy|buying|purchase/.test(lower)) fields.housingGoal = "either";
+  else if (/cost rental|renting|social housing|hap/.test(lower)) fields.housingGoal = "rent";
+  else if (/buy|buying|purchase/.test(lower)) fields.housingGoal = "buy";
+  if (/renovat|doer.upper|needs work|fixer/.test(lower)) fields.renovation = "some";
+  const summary = [
+    ["Income", fields.income ? `${fields.jurisdiction === "ni" ? "£" : "€"}${Number(fields.income).toLocaleString("en-IE")}` : "not found"],
+    ["Savings", fields.savings ? `${fields.jurisdiction === "ni" ? "£" : "€"}${Number(fields.savings).toLocaleString("en-IE")}` : "not found"],
+    ["Location", fields.area || "not found"],
+    ["Current situation", fields.housing === "family" ? "Living with family" : fields.housing === "renting" ? "Renting" : "not found"],
+    ["Interested in", fields.housingGoal === "either" ? "Buying, renting or supports" : fields.housingGoal === "rent" ? "Renting or supports" : fields.housingGoal === "buy" ? "Buying" : "not found"],
+  ];
+  return { fields, summary };
 }
 
 function Metric({label,value,accent}) { return <div className={`metric ${accent ? "accent":""}`}><span>{label}</span><strong>{value}</strong></div>; }
@@ -109,7 +159,6 @@ function PositionResults({ data, r, edit }) {
   const months = r.monthlySavings > 0 ? Math.ceil(savingsGap / r.monthlySavings) : Infinity;
   const progress = upfront ? Math.min(100, r.savings / upfront * 100) : 0;
   const nextStep = savingsGap > 0 ? "build the deposit and buying-cost fund further" : r.target > r.purchaseHigh ? "check a support route or compare cheaper property types" : "speak to a mortgage broker or lender";
-  const invite = researchInviteState();
   const pathwayProfile = { ...data, ...r, upfront, savingsGap, targetGap };
   const pathwayMatches = getRelevantHousingPathways(pathwayProfile, r.jurisdiction);
   const groupedPathways = {
@@ -169,7 +218,7 @@ function PositionResults({ data, r, edit }) {
     <button className="primary wide" onClick={()=>window.location.hash="/buying-guide"}>See how the buying process works <span>→</span></button>
     <section className="next-realistic"><p className="eyebrow">Your next realistic step</p><h2>{nextStep}.</h2><p>Based on your target of a {data.home} near {data.area || "your chosen area"}, this is the step most likely to give you clearer information.</p></section>
     <section className="pathways-section">
-      <div className="section-heading map-heading"><span aria-hidden="true">⌁</span><div><p className="eyebrow">Your housing pathways</p><h2>Routes most worth exploring</h2><p>Based on what you told us, these are the routes most worth exploring. This is an initial guide, not an eligibility decision.</p></div></div>
+      <div className="section-heading map-heading"><span aria-hidden="true">⌁</span><div><p className="eyebrow">Your housing pathways</p><h2>Routes most worth exploring</h2><p>These are routes worth exploring based on what you told us. This is not an eligibility decision.</p></div></div>
       <div className="pathway-map" aria-hidden="true">
         <span>Start</span>
         {topPathways.map((pathway, index) => <React.Fragment key={pathway.id}><i/><span>{index + 1}. {pathway.name}</span></React.Fragment>)}
@@ -213,7 +262,6 @@ function PositionResults({ data, r, edit }) {
       <div className="result-section"><div className="section-heading"><span>04</span><div><h2>What to search for</h2></div></div><ul className="search-list"><li>{data.home} homes within {m(r.purchaseHigh)}</li><li>Nearby towns with lower asking prices</li><li>{r.jurisdiction==="roi" ? "Eligible new builds if support schemes may apply" : "Homes where a Co-Ownership share may work"}</li><li>Homes needing {data.renovation === "none" ? "little or no" : "manageable"} work, with a separate buffer</li></ul></div>
     </section>
     <section className="next-steps"><p className="eyebrow">Your next three steps</p><ol>{topPathways.map((pathway, index) => <li key={pathway.id}><span>{index + 1}</span><p>{pathway.nextStep}</p></li>)}</ol></section>
-    {!invite.dismissed && <section className="research-invite"><h2>Help us understand young people’s experience of housing.</h2><p>We are collecting anonymous views on housing knowledge, confidence and barriers. This is optional and does not affect your results.</p><button>Share my view</button><button onClick={()=>setResearchInvite({dismissed:true})}>Maybe later</button><button onClick={()=>setResearchInvite({dismissed:true})}>No thanks</button></section>}
     <Disclaimer>This is a starting point, not a decision. It is not a mortgage offer and does not replace advice from a broker, lender, solicitor, surveyor, local authority, Housing Executive route or housing adviser.</Disclaimer>
   </div>;
 }
@@ -238,6 +286,7 @@ function PathwayGroup({ title, items, navigateQuestion }) {
           <a href={`#${item.relatedRoute}`}>{item.lesson}</a>
           <button onClick={() => navigateQuestion(item)}>Ask HomePath</button>
         </div>
+        <small>Source: {item.source.label}. Last reviewed: {item.source.lastReviewed}.</small>
       </article>)}
     </div>
   </div>;

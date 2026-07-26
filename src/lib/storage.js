@@ -49,11 +49,3 @@ export function toggleModuleComplete(id) {
   writeStore("homepath-completed-modules", next);
   return next;
 }
-
-export function researchInviteState() {
-  return readStore("homepath-research-invite", { dismissed: false });
-}
-
-export function setResearchInvite(value) {
-  writeStore("homepath-research-invite", value);
-}

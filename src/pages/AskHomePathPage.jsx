@@ -3,11 +3,16 @@ import { PageHead } from "../components/Layout";
 import { askHomePath } from "../services/askHomePath";
 
 const starters = [
-  "What housing routes may be worth checking?",
+  "Where should I start?",
+  "Could social housing be relevant to me?",
+  "What is the difference between social housing and HAP?",
+  "What is Cost Rental?",
   "Can I speak to a broker before finding a house?",
+  "What does a mortgage broker do?",
   "What should I check before relying on a support scheme?",
   "What is the difference between a survey and a valuation?",
-  "How much cash do I need beyond the deposit?",
+  "Explain my HomePath results.",
+  "What should I do next?",
   "What should I ask at a viewing?",
 ];
 
@@ -61,7 +66,7 @@ export default function AskHomePathPage({ navigate }) {
         {loading && <p role="status">Asking HomePath…</p>}
       </div>
       <form onSubmit={submit} className="ask-page-form">
-        <label className="ask-input"><span>Your question</span><textarea rows="4" value={question} onChange={event => setQuestion(event.target.value)} placeholder="For example: Is Co-Ownership the same as a mortgage?" /></label>
+        <label className="ask-input"><span>Your question</span><textarea rows="4" value={question} onChange={event => setQuestion(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); submit(); } }} placeholder="For example: Is Co-Ownership the same as a mortgage?" /></label>
         {error && <p className="form-error">{error}</p>}
         <button className="primary" type="submit" disabled={loading}>{loading ? "Asking…" : "Ask HomePath"} <span>→</span></button>
       </form>
