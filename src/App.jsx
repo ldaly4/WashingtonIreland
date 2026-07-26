@@ -11,7 +11,7 @@ import LearnPage from "./pages/LearnPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import GlossaryPage from "./pages/GlossaryPage";
 
-const VisualTestPage = React.lazy(() => import("./pages/VisualTestPage"));
+const VisualTestPage = import.meta.env.DEV ? React.lazy(() => import("./pages/VisualTestPage")) : null;
 
 const routes = {
   "/": HomePage,
@@ -24,7 +24,7 @@ const routes = {
   "/learn": LearnPage,
   "/privacy": PrivacyPage,
   "/savings-plan": SavingsPlanPage,
-  "/visual-test": VisualTestPage,
+  ...(import.meta.env.DEV ? { "/visual-test": VisualTestPage } : {}),
 };
 const currentPath = () => window.location.hash.slice(1) || "/";
 
