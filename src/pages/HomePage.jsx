@@ -39,7 +39,6 @@ export default function HomePage({ navigate }) {
           <HouseMark />
           <span><b>Home</b><i>Path</i><small>Making your path to housing easier.</small></span>
         </div>
-        <p className="eyebrow">HOMEPATH</p>
         <h1>Making your path to housing easier.</h1>
         <p>Understand your options, learn how housing works and find the next realistic step for your situation.</p>
         <div className="home-hero-actions">
@@ -90,8 +89,7 @@ export default function HomePage({ navigate }) {
         <h2 id="pathways-title">There is more than one path to a home.</h2>
       </div>
       <div className="pathway-ribbon">
-        {pathways.map(([title, text], index) => <article key={title}>
-          <span aria-hidden="true" />
+        {pathways.map(([title, text]) => <article key={title}>
           <h3>{title}</h3>
           <p>{text}</p>
         </article>)}

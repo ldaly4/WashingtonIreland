@@ -2244,20 +2244,6 @@ main{background:transparent}
   border-right:0;
 }
 
-.intent-panel:before{
-  content:"";
-  position:absolute;
-  right:-32px;
-  bottom:-32px;
-  width:148px;
-  height:148px;
-  border-radius:50%;
-  background:rgba(244,196,69,.24);
-}
-
-.intent-2:before{background:rgba(127,160,138,.26)}
-.intent-3:before{background:rgba(110,198,255,.25)}
-
 .intent-panel>span{
   width:max-content;
   border-radius:999px;
@@ -2444,22 +2430,6 @@ main{background:transparent}
 .pathway-ribbon article:last-child{
   border-right:0;
 }
-
-.pathway-ribbon span{
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:
-    radial-gradient(circle at 50% 56%, var(--hp-green) 0 4px, transparent 5px),
-    linear-gradient(180deg,#dceccf,#edf6e7);
-}
-
-.pathway-ribbon article:nth-child(2) span,
-.pathway-ribbon article:nth-child(6) span{background:radial-gradient(circle at 50% 56%, var(--hp-blue) 0 4px, transparent 5px),linear-gradient(180deg,#dff4ff,#edf8ff)}
-.pathway-ribbon article:nth-child(3) span{background:radial-gradient(circle at 50% 56%, var(--hp-yellow) 0 4px, transparent 5px),linear-gradient(180deg,#fff1bf,#fff8dd)}
-.pathway-ribbon article:nth-child(4) span{background:radial-gradient(circle at 50% 56%, var(--hp-coral) 0 4px, transparent 5px),linear-gradient(180deg,#ffe1df,#fff3f1)}
 
 .pathway-ribbon h3{
   margin:15px 0 7px;
@@ -3241,5 +3211,549 @@ body:before{
     display:block;
     font-size:9.5px;
     max-width:124px;
+  }
+}
+
+/* Launch polish pass: remove decorative noise and unify the product feel */
+:root{
+  --hp-radius-sm:12px;
+  --hp-radius:18px;
+  --hp-radius-lg:24px;
+  --hp-surface:#fffdf8;
+  --hp-surface-soft:#fff8ea;
+  --hp-border:rgba(15,45,77,.13);
+  --hp-border-soft:rgba(15,45,77,.08);
+  --hp-shadow-launch:0 10px 24px rgba(15,45,77,.07);
+  --hp-shadow-focus:0 0 0 4px rgba(110,198,255,.28);
+  --hp-ease:cubic-bezier(.2,.8,.2,1);
+}
+
+body{
+  background:#fff8ea;
+}
+
+body:before,
+.hero>div:first-child:before,
+.city-board:before,
+.city-board:after,
+.actions:before,
+.action-card:before,
+.action-card:after,
+.intent-panel:before,
+.terrace-house:before,
+.pathway-card:before,
+.page-head:after{
+  display:none!important;
+  content:none!important;
+}
+
+.home-redesign{
+  background:#fff8ea;
+}
+
+.page{
+  padding-top:56px;
+  padding-bottom:88px;
+}
+
+.page-head{
+  max-width:820px;
+  margin-bottom:34px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+
+.page-head h1,
+.home-hero-copy h1,
+.lesson-head h1,
+.towers-hero h1{
+  max-width:760px;
+  line-height:1.04;
+}
+
+.page-head>p:last-child,
+.home-hero-copy>p,
+.plain-card p,
+.intent-panel p,
+.pathway-ribbon p,
+.home-evidence p,
+.accordion-body p,
+.lesson-screen p,
+.guide-summary li{
+  line-height:1.58;
+}
+
+.eyebrow{
+  margin-bottom:10px;
+  font-size:.76rem!important;
+  line-height:1.25;
+  letter-spacing:.12em;
+}
+
+.home-hero-v2{
+  padding-top:48px;
+  padding-bottom:30px;
+  gap:38px;
+}
+
+.home-hero-copy h1{
+  color:var(--hp-green);
+  font-size:clamp(42px,5vw,64px);
+}
+
+.home-full-logo{
+  margin-bottom:18px;
+}
+
+.home-illustration{
+  border:1px solid var(--hp-border);
+  border-radius:var(--hp-radius-lg);
+  box-shadow:var(--hp-shadow-launch);
+}
+
+.home-primary-choices,
+.terrace-section,
+.home-pathways,
+.home-evidence{
+  padding-top:32px;
+  padding-bottom:32px;
+}
+
+.home-section-head{
+  margin-bottom:18px;
+}
+
+.home-section-head h2{
+  font-size:clamp(27px,3.6vw,40px);
+}
+
+.intent-panels{
+  gap:16px;
+  border:0;
+  border-radius:0;
+  overflow:visible;
+  background:transparent;
+  box-shadow:none;
+}
+
+.intent-panel{
+  min-height:0;
+  padding:24px;
+  border:1px solid var(--hp-border);
+  border-radius:var(--hp-radius);
+  background:var(--hp-surface);
+  box-shadow:var(--hp-shadow-launch);
+  overflow:visible;
+}
+
+.intent-panel:last-child{
+  border-right:1px solid var(--hp-border);
+}
+
+.intent-panel>span{
+  margin-bottom:14px;
+  padding:0;
+  border-radius:0;
+  background:transparent;
+  color:var(--hp-green);
+  font-size:.74rem;
+}
+
+.intent-panel h3{
+  margin:0 0 8px;
+  font-size:1.22rem;
+  line-height:1.16;
+}
+
+.intent-panel button,
+.home-evidence button,
+.primary,
+.guide-inline-button,
+.secondary-cta,
+.related-grid button,
+.glossary-grid button,
+.ask-tools button,
+.ask-feedback button,
+.mode-tabs button,
+.tabs button,
+.lesson-recommendation-grid button,
+.pathway-actions button,
+.source-list button,
+.house-reset-button,
+.text-button{
+  min-height:44px;
+  border-radius:999px;
+  padding:11px 17px;
+  font-weight:850;
+  line-height:1;
+  box-shadow:none!important;
+  transition:background-color .16s var(--hp-ease), border-color .16s var(--hp-ease), color .16s var(--hp-ease), transform .16s var(--hp-ease);
+}
+
+.primary,
+.guide-inline-button,
+.intent-panel button,
+.home-evidence button,
+.lesson-recommendation-grid button,
+.pathway-actions button:first-child{
+  border:1px solid var(--hp-green);
+  background:var(--hp-green);
+  color:#fff;
+}
+
+.primary:hover,
+.guide-inline-button:hover,
+.intent-panel button:hover,
+.home-evidence button:hover,
+.lesson-recommendation-grid button:hover,
+.pathway-actions button:first-child:hover{
+  background:#244b31;
+  border-color:#244b31;
+  transform:translateY(-1px);
+}
+
+.secondary-cta,
+.related-grid button,
+.glossary-grid button,
+.ask-tools button,
+.ask-feedback button,
+.mode-tabs button,
+.tabs button,
+.pathway-actions button,
+.source-list button,
+.text-button{
+  border:1px solid var(--hp-border);
+  background:var(--hp-surface);
+  color:var(--hp-green);
+}
+
+.secondary-cta:hover,
+.related-grid button:hover,
+.glossary-grid button:hover,
+.ask-tools button:hover,
+.ask-feedback button:hover,
+.mode-tabs button:hover,
+.tabs button:hover,
+.pathway-actions button:hover,
+.source-list button:hover{
+  border-color:rgba(46,91,58,.35);
+  background:#f4f8ef;
+  transform:translateY(-1px);
+}
+
+.text-button{
+  min-height:0;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:var(--hp-green);
+}
+
+.georgian-terrace{
+  border:1px solid var(--hp-border);
+  border-radius:var(--hp-radius-lg);
+  box-shadow:var(--hp-shadow-launch);
+}
+
+.terrace-house{
+  background:#ffe6bf;
+}
+
+.terrace-house:hover .terrace-door,
+.terrace-house:focus-visible .terrace-door{
+  transform:perspective(220px) rotateY(-8deg);
+}
+
+.pathway-ribbon{
+  gap:14px;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  border:0;
+  border-radius:0;
+  overflow:visible;
+  box-shadow:none;
+}
+
+.pathway-ribbon article,
+.pathway-ribbon article:nth-child(2n){
+  min-height:0;
+  padding:18px;
+  border:1px solid var(--hp-border);
+  border-radius:var(--hp-radius);
+  background:var(--hp-surface);
+  box-shadow:none;
+}
+
+.pathway-ribbon article:last-child{
+  border-right:1px solid var(--hp-border);
+}
+
+.pathway-ribbon span{
+  display:none;
+}
+
+.pathway-ribbon h3{
+  margin:0 0 7px;
+  font-size:1rem;
+  line-height:1.18;
+}
+
+.home-evidence{
+  gap:16px;
+}
+
+.home-evidence article,
+.plain-card,
+.form-card,
+.scenario,
+.number-card,
+.fit-card,
+.energy-card,
+.costs-guide,
+.accordion,
+.lesson-card,
+.lesson-side,
+.lesson-screen,
+.teaching-card,
+.scenario-card,
+.tower-section-card,
+.guide-step,
+.guide-summary,
+.house-access-panel,
+.result-section>.plain-card,
+.glossary-grid article,
+.themes-grid article,
+.stat-grid article,
+.people-grid article,
+.money-timeline article,
+.professional-grid article,
+.lesson-recommendation-grid article,
+.pathway-grid article,
+.repayment-cards article,
+.why-costs article,
+.verified-support-data,
+.home-personal,
+.disclaimer,
+.quote-grid blockquote,
+.range-panel,
+.repayment-panel,
+.house-glance,
+.pulse-hero,
+.towers-hero{
+  border:1px solid var(--hp-border);
+  border-radius:var(--hp-radius);
+  box-shadow:none!important;
+}
+
+.home-evidence article,
+.plain-card,
+.form-card,
+.scenario,
+.number-card,
+.fit-card,
+.energy-card,
+.accordion,
+.lesson-card,
+.lesson-side,
+.lesson-screen,
+.teaching-card,
+.scenario-card,
+.tower-section-card,
+.guide-step,
+.guide-summary,
+.house-access-panel,
+.glossary-grid article,
+.themes-grid article,
+.stat-grid article,
+.people-grid article,
+.money-timeline article,
+.professional-grid article,
+.lesson-recommendation-grid article,
+.pathway-grid article,
+.repayment-cards article,
+.why-costs article,
+.verified-support-data,
+.home-personal,
+.disclaimer,
+.quote-grid blockquote{
+  background:var(--hp-surface);
+}
+
+.result-section{
+  margin:48px 0;
+}
+
+.section-heading{
+  gap:14px;
+  margin-bottom:18px;
+}
+
+.section-heading>span,
+.form-progress{
+  min-width:34px;
+  min-height:34px;
+  display:inline-grid;
+  place-items:center;
+  padding:0 10px;
+  border:1px solid rgba(46,91,58,.22);
+  border-radius:999px;
+  background:#f4f8ef;
+  color:var(--hp-green);
+  font-size:.78rem;
+  font-weight:900;
+}
+
+.section-heading h2{
+  font-size:clamp(23px,3vw,32px);
+  line-height:1.14;
+}
+
+.range-panel,
+.house-glance,
+.towers-hero,
+.pulse-hero{
+  background:var(--hp-blue);
+  color:#fff;
+}
+
+.range-panel p,
+.house-glance p,
+.towers-hero p,
+.pulse-hero p{
+  color:rgba(255,255,255,.82);
+}
+
+.repayment-panel{
+  background:#f6fbf2;
+  padding:22px;
+}
+
+.pathway-grid{
+  gap:16px;
+}
+
+.pathway-grid article{
+  border-top:1px solid var(--hp-border);
+}
+
+.glance-grid article,
+.metric{
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--hp-radius-sm);
+  box-shadow:none!important;
+}
+
+.field input,
+.field select,
+.field textarea,
+.money-input,
+.ask-input textarea,
+.ask-drawer select{
+  min-height:46px;
+  border-radius:var(--hp-radius-sm);
+  box-shadow:none!important;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+.money-input:focus-within,
+.ask-input textarea:focus{
+  box-shadow:var(--hp-shadow-focus)!important;
+}
+
+.accordion{
+  margin-bottom:12px;
+  overflow:hidden;
+}
+
+.accordion>button{
+  padding:18px 20px;
+  background:var(--hp-surface);
+}
+
+.accordion-body{
+  padding:0 20px 20px;
+}
+
+.guide-summary{
+  background:#f6fbf2;
+}
+
+.guide-summary aside{
+  border-radius:var(--hp-radius-sm);
+}
+
+.rank-list p,
+.cost-table article,
+.money-timeline article,
+.mini-breakdown div,
+.support-list li{
+  border-color:var(--hp-border-soft);
+}
+
+.bottom-nav{
+  box-shadow:none!important;
+}
+
+.more-menu,
+.ask-drawer{
+  border:1px solid var(--hp-border);
+  box-shadow:var(--hp-shadow-launch)!important;
+}
+
+.ask-fab{
+  box-shadow:var(--hp-shadow-launch)!important;
+}
+
+@media(max-width:920px){
+  .intent-panel{
+    border-right:1px solid var(--hp-border);
+    border-bottom:1px solid var(--hp-border);
+  }
+}
+
+@media(max-width:760px){
+  .page{
+    padding-top:34px;
+    padding-left:20px;
+    padding-right:20px;
+  }
+
+  .home-hero-v2,
+  .home-primary-choices,
+  .terrace-section,
+  .home-pathways,
+  .home-evidence{
+    padding-left:20px;
+    padding-right:20px;
+  }
+
+  .intent-panel,
+  .home-evidence article,
+  .plain-card,
+  .form-card{
+    padding:20px;
+  }
+
+  .home-section-head,
+  .section-heading{
+    text-align:left;
+  }
+
+  .home-section-head h2{
+    margin-left:0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,
+  *:before,
+  *:after{
+    transition:none!important;
+    animation:none!important;
+    scroll-behavior:auto!important;
   }
 }
