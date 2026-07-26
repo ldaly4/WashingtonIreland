@@ -6,6 +6,7 @@ const nav = [
   ["/learn", "Learning Centre"],
   ["/check-position", "My position"],
   ["/check-listing", "Check a house"],
+  ["/ask", "Ask HomePath"],
   ["/buying-guide", "Buying explained"],
   ["/housing-pulse", "Housing Pulse"],
 ];
@@ -14,6 +15,7 @@ const mobileLabel = {
   "/learn": "Learn",
   "/check-position": "Position",
   "/check-listing": "Listing",
+  "/ask": "Ask",
   "/buying-guide": "Explained",
 };
 
@@ -34,7 +36,7 @@ export function HouseMark() {
 export default function Layout({ path, navigate, children }) {
   const [more,setMore]=useState(false), [ask,setAsk]=useState(false);
   useEffect(()=>{
-    const open=event=>{setAsk(event.detail?.question || true)};
+    const open=event=>{setAsk(event.detail || true)};
     window.addEventListener("homepath-open-ask",open);
     return()=>window.removeEventListener("homepath-open-ask",open);
   },[]);
@@ -55,19 +57,20 @@ export default function Layout({ path, navigate, children }) {
       <button className={more ? "active" : ""} onClick={()=>setMore(!more)}>More</button>
     </nav>
     {more && <div className="more-menu">
-      {[["/buying-guide","Buying guide"],["/savings-plan","Savings plan"],["/glossary","Glossary"],["/housing-pulse","Housing Pulse"],["/advice-centre","Advice centre"],["/privacy","Privacy"]].map(([href,label])=><a key={href} href={`#${href}`} onClick={e=>{setMore(false);go(e,href)}}>{label}</a>)}
-      <button onClick={()=>{setMore(false);setAsk(true)}}>Ask HomePath</button>
+      {[["/buying-guide","Buying guide"],["/savings-plan","Savings plan"],["/glossary","Glossary"],["/housing-pulse","Housing Pulse"],["/advice-centre","Advice centre"],["/ask","Ask HomePath"],["/privacy","Privacy"]].map(([href,label])=><a key={href} href={`#${href}`} onClick={e=>{setMore(false);go(e,href)}}>{label}</a>)}
     </div>}
     <button className="ask-fab" onClick={()=>setAsk(true)}>Ask HomePath</button>
-    {ask && <AskDrawer route={path} initialQuestion={typeof ask === "string" ? ask : ""} close={()=>setAsk(false)} navigate={navigate}/>}
+    {ask && <AskDrawer route={path} initialPayload={typeof ask === "object" ? ask : {}} close={()=>setAsk(false)} navigate={navigate}/>}
   </div>;
 }
 
-function AskDrawer({ close, navigate, initialQuestion, route }) {
+function AskDrawer({ close, navigate, initialPayload = {}, route }) {
   const answers = {
     "Who should I contact first?":"If you are unsure where you stand, a mortgage broker, adviser or lender is often a useful first conversation. You can speak to them before finding a house. If your question is legal, speak to a solicitor or conveyancer. If it is about condition, speak to a surveyor.",
     "What does approval in principle mean?":"It is an early indication of what a lender may offer. It is not final approval and it is not tied to every property.",
     "Can I speak to a broker before finding a house?":"Yes. Speaking to a broker is an information-gathering step. It does not commit you to a mortgage.",
+    "What housing routes may be worth checking?":"Start with your rough buying range, savings gap and current housing situation. Then compare private purchase with any relevant public or shared-ownership routes. HomePath can explain routes, but the official provider decides whether a scheme applies.",
+    "What should I check before relying on a support scheme?":"Check the official source, property rules, location, income or household rules, costs that remain, and whether the route affects future sale or buy-out choices.",
     "What is a booking deposit?":"In the Republic of Ireland, it is often paid to the estate agent after an offer is accepted. It normally forms part of the overall buyer deposit and is usually refundable before contracts are signed.",
     "What does a solicitor do?":"A solicitor checks the legal title, contracts, planning, boundaries and mortgage legal documents. They also handle the transfer of ownership.",
     "What is conveyancing?":"Conveyancing is the legal work needed to transfer ownership of a property. Your solicitor or conveyancer checks title, contracts, searches and mortgage legal documents.",
@@ -79,7 +82,8 @@ function AskDrawer({ close, navigate, initialQuestion, route }) {
     "What is a sinking fund?":"For apartments, a sinking fund is money set aside by the management company for larger future repairs or works.",
   };
   const suggestions = Object.keys(answers);
-  const [q,setQ]=useState(initialQuestion || "");
+  const [q,setQ]=useState(initialPayload.question || "");
+  const [history,setHistory]=useState([]);
   const [answer,setAnswer]=useState("");
   const [structured,setStructured]=useState(null);
   const [error,setError]=useState("");
@@ -98,9 +102,11 @@ function AskDrawer({ close, navigate, initialQuestion, route }) {
     }
     setLoading(true); setError("");
     try {
-      const result = await askHomePath(question, { route });
+      const context = { route, ...(initialPayload.context || {}) };
+      const result = await askHomePath(question, context, history);
       setStructured(result);
       setAnswer(result.answer || answers[question] || "I could not generate a full answer just now. Try one of the suggested questions below or check the related HomePath pages.");
+      setHistory(prev => [...prev.slice(-6), { role: "user", content: question }, { role: "assistant", content: result.answer || "" }]);
     } catch {
       setError("HomePath’s live explanation service is temporarily unavailable. The local guidance library is being used.");
       setAnswer(answers[question] || "I can still help with common topics such as brokers, deposits, surveys, valuations, solicitors and viewing questions. Choose a suggested question below.");
@@ -111,7 +117,7 @@ function AskDrawer({ close, navigate, initialQuestion, route }) {
   const clear=()=>{setQ("");setAnswer("");setStructured(null);setError("");setFeedback("");};
   return <div className="drawer-backdrop" role="dialog" aria-modal="true" aria-label="Ask HomePath">
     <aside className="ask-drawer"><button className="drawer-close" onClick={close}>Close</button><p className="eyebrow">Not sure who to ask? Ask HomePath.</p><h2>Quick housing answers</h2><p>Ask a question about buying, housing supports, mortgages, legal steps or property condition. I’ll explain it in plain language and point you towards the right next step.</p>
-      <p className="privacy-note">Your question may be processed by an external AI service to generate an answer. Do not include bank details, account numbers or other sensitive personal information.</p>
+      <p className="privacy-note">Your question may be processed by an external AI service to generate an answer. Do not include bank details, account numbers, PPS numbers, National Insurance numbers or other sensitive personal information.</p>
       <label className="ask-input"><span>Your question</span><textarea value={q} onChange={e=>setQ(e.target.value)} rows="4" placeholder="For example: Can I speak to a broker before finding a house?" /></label>
       <button className="guide-inline-button" onClick={ask} disabled={loading}>{loading ? "Asking…" : "Ask"}</button>
       {loading && <p role="status" aria-live="polite">Loading HomePath answer…</p>}

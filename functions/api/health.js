@@ -7,5 +7,10 @@ export async function onRequestOptions({ request }) {
 export async function onRequestGet({ request }) {
   const { headers, response } = requireCors(request);
   if (response) return response;
-  return json({ ok: true, service: "homepath-ai" }, 200, headers);
+  return json({
+    ok: true,
+    service: "homepath-ai",
+    endpoints: ["/api/chat", "/api/health"],
+    status: "ready",
+  }, 200, headers);
 }

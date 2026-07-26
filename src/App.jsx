@@ -10,6 +10,7 @@ import HousingPulsePage from "./pages/HousingPulsePage";
 import LearnPage from "./pages/LearnPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import GlossaryPage from "./pages/GlossaryPage";
+import AskHomePathPage from "./pages/AskHomePathPage";
 
 const VisualTestPage = import.meta.env.DEV ? React.lazy(() => import("./pages/VisualTestPage")) : null;
 
@@ -22,6 +23,7 @@ const routes = {
   "/glossary": GlossaryPage,
   "/housing-pulse": HousingPulsePage,
   "/learn": LearnPage,
+  "/ask": AskHomePathPage,
   "/privacy": PrivacyPage,
   "/savings-plan": SavingsPlanPage,
   ...(import.meta.env.DEV ? { "/visual-test": VisualTestPage } : {}),

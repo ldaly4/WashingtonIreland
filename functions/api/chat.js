@@ -33,6 +33,27 @@ const schema = {
   required: ["answer","jurisdiction","suggestedActions","officialSources","professionalHelp","disclaimer"],
 };
 
+function normaliseConversation(body) {
+  const messages = Array.isArray(body?.conversation) ? body.conversation : Array.isArray(body?.history) ? body.history : [];
+  return messages.slice(-8).map(m => ({
+    role: m.role === "assistant" ? "assistant" : "user",
+    content: stripContactInfo(m.content || m.answer || m.question || "").slice(0, 900),
+  })).filter(m => m.content.trim());
+}
+
+function normaliseContext(body) {
+  const rawContext = body?.context || {};
+  const pathways = Array.isArray(body?.housingPathways) ? body.housingPathways : Array.isArray(rawContext?.housingPathways) ? rawContext.housingPathways : [];
+  const profile = body?.relevantProfile || rawContext?.relevantProfile || {};
+  return {
+    route: String(body?.route || rawContext?.route || "").slice(0, 80),
+    jurisdiction: String(body?.jurisdiction || rawContext?.jurisdiction || "unclear").slice(0, 30),
+    relevantResultSummary: stripContactInfo(rawContext?.relevantResultSummary || body?.relevantResultSummary || "").slice(0, 800),
+    housingPathways: pathways.map(x => stripContactInfo(x).slice(0, 80)).slice(0, 8),
+    relevantProfile: typeof profile === "object" && profile ? Object.fromEntries(Object.entries(profile).slice(0, 12).map(([k, v]) => [String(k).slice(0, 40), stripContactInfo(v).slice(0, 120)])) : {},
+  };
+}
+
 function safeFallback(question, entries) {
   const source = entries[0];
   return {
@@ -43,6 +64,30 @@ function safeFallback(question, entries) {
     professionalHelp: ["Mortgage broker or adviser", "Solicitor or conveyancer", "Surveyor"],
     disclaimer: "General information only.",
   };
+}
+
+async function createHomePathResponse(env, { question, history, context, retrieved }) {
+  return callResponses(env, {
+    model: model(env),
+    max_output_tokens: 900,
+    input: [
+      { role: "system", content: SYSTEM },
+      ...history,
+      { role: "user", content: JSON.stringify({
+        question,
+        context,
+        curatedKnowledge: retrieved,
+        responseRules: [
+          "Use British English.",
+          "Use may be, could be relevant, worth checking, rough estimate and not a mortgage offer where appropriate.",
+          "Never say eligible, qualifies or guaranteed.",
+          "If the user asks for a calculation, explain that HomePath estimates are rough and lenders/providers decide.",
+          "If the question depends on current thresholds, tell the user to check the official source.",
+        ],
+      }) },
+    ],
+    text: { format: { type: "json_schema", name: "homepath_chat_response", schema, strict: true } },
+  });
 }
 
 export async function onRequestOptions({ request }) {
@@ -61,25 +106,12 @@ export async function onRequestPost({ request, env }) {
   const question = stripContactInfo(body?.question || body?.message || "");
   if (!question.trim()) return errorResponse("EMPTY_QUESTION", "Ask a question first.", 400, headers);
   if (question.length > 2000) return errorResponse("QUESTION_TOO_LONG", "Your question is too long. Please shorten it and try again.", 400, headers);
-  const history = Array.isArray(body?.history) ? body.history.slice(-10).map(m => ({ role: m.role === "assistant" ? "assistant" : "user", content: stripContactInfo(m.content || "").slice(0, 1000) })) : [];
-  const context = {
-    route: String(body?.context?.route || "").slice(0, 80),
-    jurisdiction: String(body?.context?.jurisdiction || "unclear").slice(0, 30),
-    relevantResultSummary: stripContactInfo(body?.context?.relevantResultSummary || "").slice(0, 800),
-  };
+  const history = normaliseConversation(body);
+  const context = normaliseContext(body);
   const entries = retrieveKnowledge(question, context.route);
   const retrieved = entries.length ? entries : fallbackKnowledge();
 
-  const result = await callResponses(env, {
-    model: model(env),
-    max_output_tokens: 900,
-    input: [
-      { role: "system", content: SYSTEM },
-      ...history,
-      { role: "user", content: JSON.stringify({ question, context, curatedKnowledge: retrieved }) },
-    ],
-    text: { format: { type: "json_schema", name: "homepath_chat_response", schema, strict: true } },
-  });
+  const result = await createHomePathResponse(env, { question, history, context, retrieved });
   if (result.error) {
     logRequest(endpoint, result.error.status, started, id, result.error.code);
     return json(safeFallback(question, retrieved), 200, headers);

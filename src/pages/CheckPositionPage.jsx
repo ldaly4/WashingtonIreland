@@ -4,8 +4,9 @@ import { calculatePosition, money } from "../lib/calculations";
 import { saveHomePath, researchInviteState, setResearchInvite } from "../lib/storage";
 import CostsBeyondDeposit from "../components/CostsBeyondDeposit";
 import { explainResults } from "../services/explainResults";
+import { broadPathwayInputs, getRelevantHousingPathways } from "../data/housingPathways";
 
-const initial = { jurisdiction:"roi", area:"", buying:"alone", income:"", monthlySavings:"", monthlyRent:"", monthlyPension:"", savings:"", firstTime:"yes", housing:"renting", home:"3-bed", renovation:"none", target:"", research:false };
+const initial = { jurisdiction:"roi", area:"", buying:"alone", income:"", monthlySavings:"", monthlyRent:"", monthlyPension:"", savings:"", firstTime:"yes", housing:"renting", home:"3-bed", renovation:"none", target:"", householdSize:"1", dependentChildren:"0", localAuthority:"", housingUrgency:"stable", accessibilityNeed:"no", housingGoal:"buy", previouslyOwned:"no", receivesHousingSupport:"no", research:false };
 const savedCheck = () => {
   try {
     const saved = sessionStorage.getItem("homepath-position");
@@ -39,6 +40,7 @@ export default function CheckPositionPage() {
       <div className="form-grid">
         <Field label="Where are you looking?"><Select value={data.jurisdiction} onChange={set("jurisdiction")} options={[["roi","Republic of Ireland"],["ni","Northern Ireland"],["unsure","Not sure"]]}/></Field>
         <Field label="What area are you hoping to live in?"><input required value={data.area} onChange={set("area")} placeholder="e.g. Swords, Galway, Belfast" /></Field>
+        <Field label={data.jurisdiction === "ni" ? "Council area or nearest town" : "Local authority or county"} hint="A rough area is enough for now"><input value={data.localAuthority} onChange={set("localAuthority")} placeholder={data.jurisdiction === "ni" ? "e.g. Belfast, Derry and Strabane" : "e.g. Fingal, Galway City, Cork County"} /></Field>
         <Field label="Are you buying alone or with someone else?"><Select value={data.buying} onChange={set("buying")} options={[["alone","Alone"],["together","With someone else"],["unsure","Not sure"]]}/></Field>
         <Field label={data.buying === "together" ? "Approximate joint yearly income before tax" : "Approximate yearly income before tax"} hint={data.buying === "together" ? "Add both buyers’ gross yearly incomes together" : "Your gross yearly income"}><div className="money-input"><span>{data.jurisdiction === "ni" ? "£" : "€"}</span><input required min="0" type="number" value={data.income} onChange={set("income")} /></div></Field>
         <Field label="How much do you save each month?" hint="Your regular monthly savings"><div className="money-input"><span>{data.jurisdiction === "ni" ? "£" : "€"}</span><input required min="0" type="number" value={data.monthlySavings} onChange={set("monthlySavings")} /></div></Field>
@@ -46,7 +48,14 @@ export default function CheckPositionPage() {
         <Field label="Monthly pension contributions" hint="Your regular personal and workplace contributions"><div className="money-input"><span>{data.jurisdiction === "ni" ? "£" : "€"}</span><input required min="0" type="number" value={data.monthlyPension} onChange={set("monthlyPension")} /></div></Field>
         <Field label="Approximately how much do you have saved in total?" hint="For your deposit and upfront buying costs"><div className="money-input"><span>{data.jurisdiction === "ni" ? "£" : "€"}</span><input required min="0" type="number" value={data.savings} onChange={set("savings")} /></div></Field>
         <Field label="Are you a first-time buyer?"><Select value={data.firstTime} onChange={set("firstTime")} options={[["yes","Yes"],["no","No"],["unsure","Not sure"]]}/></Field>
+        <Field label="Have you owned a home before?"><Select value={data.previouslyOwned} onChange={set("previouslyOwned")} options={[["no","No"],["yes","Yes"],["unsure","Not sure"]]}/></Field>
         <Field label="Current housing situation"><Select value={data.housing} onChange={set("housing")} options={[["renting","Renting privately"],["family","Living with family"],["social","Social housing"],["insecure","Temporary or insecure housing"],["other","Other"]]}/></Field>
+        <Field label="Is your current housing urgent or unsuitable?"><Select value={data.housingUrgency} onChange={set("housingUrgency")} options={[["stable","No, broadly stable"],["unsuitable","Unsuitable for my household"],["urgent","Urgent or insecure"],["prefer-not","Prefer not to say"]]}/></Field>
+        <Field label="How many people are in your household?"><input min="1" type="number" value={data.householdSize} onChange={set("householdSize")} /></Field>
+        <Field label="Dependent children in the household"><input min="0" type="number" value={data.dependentChildren} onChange={set("dependentChildren")} /></Field>
+        <Field label="Any disability or accessibility need to consider?"><Select value={data.accessibilityNeed} onChange={set("accessibilityNeed")} options={[["no","No"],["yes","Yes"],["prefer-not","Prefer not to say"]]}/></Field>
+        <Field label="Are you mainly open to buying, renting, or either?"><Select value={data.housingGoal} onChange={set("housingGoal")} options={[["buy","Buying"],["rent","Renting"],["either","Either, if it improves my situation"],["unsure","Not sure"]]}/></Field>
+        <Field label="Do you currently receive housing support?"><Select value={data.receivesHousingSupport} onChange={set("receivesHousingSupport")} options={[["no","No"],["yes","Yes"],["unsure","Not sure"],["prefer-not","Prefer not to say"]]}/></Field>
         <Field label="What kind of home are you hoping for?"><Select value={data.home} onChange={set("home")} options={[["apartment","Apartment"],["2-bed","2-bed"],["3-bed","3-bed"],["4-bed","4-bed"],["flexible","Flexible"]]}/></Field>
         <Field label="Are you open to a home that needs work?"><Select value={data.renovation} onChange={set("renovation")} options={[["none","No"],["cosmetic","Cosmetic work only"],["some","Some renovation"],["yes","Yes, if it makes the numbers work"]]}/></Field>
         <Field label="Target property price" hint="Optional, if you have one in mind"><div className="money-input"><span>{data.jurisdiction === "ni" ? "£" : "€"}</span><input min="0" type="number" value={data.target} onChange={set("target")} /></div></Field>
@@ -101,6 +110,26 @@ function PositionResults({ data, r, edit }) {
   const progress = upfront ? Math.min(100, r.savings / upfront * 100) : 0;
   const nextStep = savingsGap > 0 ? "build the deposit and buying-cost fund further" : r.target > r.purchaseHigh ? "check a support route or compare cheaper property types" : "speak to a mortgage broker or lender";
   const invite = researchInviteState();
+  const pathwayProfile = { ...data, ...r, upfront, savingsGap, targetGap };
+  const pathwayMatches = getRelevantHousingPathways(pathwayProfile, r.jurisdiction);
+  const groupedPathways = {
+    "Strongest routes": pathwayMatches.filter(x => x.group === "Strongest routes"),
+    "Also worth checking": pathwayMatches.filter(x => x.group === "Also worth checking"),
+    "Longer-term possibilities": pathwayMatches.filter(x => x.group === "Longer-term possibilities"),
+  };
+  const broadInputs = broadPathwayInputs(data, { purchaseHigh: r.purchaseHigh, target: r.target });
+  const topPathways = pathwayMatches.slice(0, 3);
+  const askAboutPathway = pathway => {
+    window.dispatchEvent(new CustomEvent("homepath-open-ask", { detail: {
+      question: `Can you explain whether ${pathway.name} may be worth checking for my situation?`,
+      context: {
+        route: "/check-position",
+        jurisdiction: r.jurisdiction,
+        housingPathways: topPathways.map(x => x.name),
+        relevantProfile: Object.fromEntries(broadInputs),
+      },
+    }}));
+  };
   const requestExplanation = async () => {
     setAiLoading(true); setAiError("");
     try {
@@ -139,6 +168,19 @@ function PositionResults({ data, r, edit }) {
     <section className="result-section"><div className="section-heading"><span>£€</span><div><h2>The full cash picture</h2><p>The deposit is only one part of the money needed.</p></div></div><CostsBeyondDeposit jurisdiction={r.jurisdiction} initialPrice={r.target} /></section>
     <button className="primary wide" onClick={()=>window.location.hash="/buying-guide"}>See how the buying process works <span>→</span></button>
     <section className="next-realistic"><p className="eyebrow">Your next realistic step</p><h2>{nextStep}.</h2><p>Based on your target of a {data.home} near {data.area || "your chosen area"}, this is the step most likely to give you clearer information.</p></section>
+    <section className="pathways-section">
+      <div className="section-heading map-heading"><span aria-hidden="true">⌁</span><div><p className="eyebrow">Your housing pathways</p><h2>Routes most worth exploring</h2><p>Based on what you told us, these are the routes most worth exploring. This is an initial guide, not an eligibility decision.</p></div></div>
+      <div className="pathway-map" aria-hidden="true">
+        <span>Start</span>
+        {topPathways.map((pathway, index) => <React.Fragment key={pathway.id}><i/><span>{index + 1}. {pathway.name}</span></React.Fragment>)}
+      </div>
+      {Object.entries(groupedPathways).map(([title, items]) => items.length > 0 && <PathwayGroup key={title} title={title} items={items} navigateQuestion={askAboutPathway} />)}
+      <details className="why-pathways">
+        <summary>Why am I seeing this?</summary>
+        <p>HomePath uses broad signals only. It does not assess eligibility, credit history, legal status or exact scheme rules.</p>
+        <dl>{broadInputs.map(([label,value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+      </details>
+    </section>
     <section className="plain-card"><h3>Want this explained in plainer English?</h3><p>HomePath can ask the live explanation service to explain the fixed numbers above. It will not recalculate them.</p><button className="primary" disabled={aiLoading} onClick={requestExplanation}>{aiLoading ? "Explaining…" : "Explain my result"} <span>→</span></button>{aiError && <p className="form-error">{aiError}</p>}{aiExplanation && <div className="ai-explanation"><h3>{aiExplanation.shortAnswer}</h3><p>{aiExplanation.whatItMeans}</p><ul>{aiExplanation.nextSteps?.map(x=><li key={x}>{x}</li>)}</ul><small>{aiExplanation.disclaimer}</small></div>}</section>
     <section className="range-panel">
       <div><p className="eyebrow">Your buying range</p><h2>{m(r.purchaseLow)}–{m(r.purchaseHigh)}</h2><p>Estimated purchase range without housing supports</p></div>
@@ -170,10 +212,33 @@ function PositionResults({ data, r, edit }) {
       <div className="result-section"><div className="section-heading"><span>03</span><div><h2>Supports worth checking</h2></div></div><ul className="support-list">{supportReasons[r.jurisdiction].map(([name,reason])=><li key={name}><strong>{name}</strong><span>{reason}</span></li>)}</ul></div>
       <div className="result-section"><div className="section-heading"><span>04</span><div><h2>What to search for</h2></div></div><ul className="search-list"><li>{data.home} homes within {m(r.purchaseHigh)}</li><li>Nearby towns with lower asking prices</li><li>{r.jurisdiction==="roi" ? "Eligible new builds if support schemes may apply" : "Homes where a Co-Ownership share may work"}</li><li>Homes needing {data.renovation === "none" ? "little or no" : "manageable"} work, with a separate buffer</li></ul></div>
     </section>
-    <section className="next-steps"><p className="eyebrow">Your next three steps</p><ol><li><span>1</span><p>Check the official scheme pages or local housing route for your area.</p></li><li><span>2</span><p>Speak to a broker, lender, local authority, Housing Executive route or housing adviser about your actual position.</p></li><li><span>3</span><p>Pick three real listings and use Check a listing to compare costs and questions.</p></li></ol></section>
+    <section className="next-steps"><p className="eyebrow">Your next three steps</p><ol>{topPathways.map((pathway, index) => <li key={pathway.id}><span>{index + 1}</span><p>{pathway.nextStep}</p></li>)}</ol></section>
     {!invite.dismissed && <section className="research-invite"><h2>Help us understand young people’s experience of housing.</h2><p>We are collecting anonymous views on housing knowledge, confidence and barriers. This is optional and does not affect your results.</p><button>Share my view</button><button onClick={()=>setResearchInvite({dismissed:true})}>Maybe later</button><button onClick={()=>setResearchInvite({dismissed:true})}>No thanks</button></section>}
     <Disclaimer>This is a starting point, not a decision. It is not a mortgage offer and does not replace advice from a broker, lender, solicitor, surveyor, local authority, Housing Executive route or housing adviser.</Disclaimer>
   </div>;
 }
 
 function DashCard({label,value}) { return <article className="number-card"><span>{label}</span><strong>{value}</strong></article> }
+
+function PathwayGroup({ title, items, navigateQuestion }) {
+  return <div className="pathway-group">
+    <h3>{title}</h3>
+    <div className="pathway-grid">
+      {items.map(item => <article className="pathway-card" key={item.id}>
+        <div className="pathway-card-head">
+          <span className={`fit-pill fit-${item.fit}`}>{item.fitLabel}</span>
+          <h4>{item.name}</h4>
+        </div>
+        <p><strong>Why this appears:</strong> {item.why}</p>
+        <p><strong>What it could offer:</strong> {item.offer}</p>
+        <p><strong>Limitations:</strong> {item.limitations}</p>
+        <p><strong>Next step:</strong> {item.nextStep}</p>
+        <div className="pathway-actions">
+          <a href={item.source.url} target="_blank" rel="noreferrer">Official source</a>
+          <a href={`#${item.relatedRoute}`}>{item.lesson}</a>
+          <button onClick={() => navigateQuestion(item)}>Ask HomePath</button>
+        </div>
+      </article>)}
+    </div>
+  </div>;
+}

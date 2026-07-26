@@ -12,7 +12,15 @@ export async function askHomePath(question, context = {}, history = []) {
   const response = await fetch(ASK_HOMEPATH_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question, context, history }),
+    body: JSON.stringify({
+      question,
+      route: context.route,
+      jurisdiction: context.jurisdiction,
+      housingPathways: context.housingPathways || [],
+      relevantProfile: context.relevantProfile || {},
+      context,
+      conversation: Array.isArray(history) ? history.slice(-8) : [],
+    }),
   });
   const payload = await response.json();
   if (!response.ok) throw new Error(payload.error?.message || payload.error || "Ask HomePath is unavailable");
