@@ -1,5 +1,6 @@
 import React from "react";
 import { readStore } from "../lib/storage";
+import { HouseMark } from "../components/Layout";
 
 const primaryChoices = [
   ["Understand my situation", "See which housing routes may be worth exploring.", "Find my housing path", "/check-position"],
@@ -34,6 +35,10 @@ export default function HomePage({ navigate }) {
   return <div className="home-redesign">
     <section className="home-hero-v2">
       <div className="home-hero-copy">
+        <div className="home-full-logo" aria-label="HomePath logo">
+          <HouseMark />
+          <span><b>Home</b><i>Path</i><small>Making your path to housing easier.</small></span>
+        </div>
         <p className="eyebrow">HOMEPATH</p>
         <h1>Making your path to housing easier.</h1>
         <p>Understand your options, learn how housing works and find the next realistic step for your situation.</p>

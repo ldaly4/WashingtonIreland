@@ -2563,6 +2563,20 @@ main{background:transparent}
   .home-section-head{
     display:block;
   }
+  .home-full-logo{
+    align-items:flex-start;
+    gap:10px;
+  }
+  .home-full-logo .mark{
+    width:96px;
+  }
+  .home-full-logo b,
+  .home-full-logo i{
+    font-size:34px;
+  }
+  .home-full-logo small{
+    font-size:10px;
+  }
   .georgian-terrace{
     min-width:940px;
   }
@@ -3067,5 +3081,165 @@ body:before{
   }
   .action-grid{
     grid-template-columns:1fr;
+  }
+}
+
+/* Navbar logo correction: preserve SVG ratio, enlarge, and prevent squeezing */
+.header{
+  min-height:118px;
+  height:auto;
+  padding-top:14px;
+  padding-bottom:14px;
+  gap:18px;
+  overflow:visible;
+}
+
+.brand{
+  flex:0 0 auto;
+  min-width:max-content;
+  gap:16px;
+  overflow:visible;
+}
+
+.brand .mark{
+  width:150px;
+  height:auto;
+  aspect-ratio:180 / 116;
+  flex:0 0 auto;
+  overflow:visible;
+}
+
+.brand .mark svg{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:180 / 116;
+  overflow:visible;
+  shape-rendering:geometricPrecision;
+}
+
+.brand span{
+  min-width:max-content;
+  flex:0 0 auto;
+}
+
+.brand b,
+.brand i{
+  font-size:44px;
+  line-height:.88;
+}
+
+.brand small{
+  display:block;
+  max-width:190px;
+  margin-top:5px;
+  font-size:12px;
+  line-height:1.05;
+  white-space:normal;
+}
+
+.desktop-nav{
+  min-width:0;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  row-gap:6px;
+}
+
+.desktop-nav a{
+  white-space:nowrap;
+}
+
+.home-full-logo{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin:0 0 24px;
+  color:var(--hp-green);
+}
+
+.home-full-logo .mark{
+  width:150px;
+  height:auto;
+  aspect-ratio:180 / 116;
+  flex:0 0 auto;
+}
+
+.home-full-logo .mark svg{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:180 / 116;
+  overflow:visible;
+}
+
+.home-full-logo span{
+  display:grid;
+  grid-template-columns:auto auto;
+  align-items:end;
+}
+
+.home-full-logo b,
+.home-full-logo i{
+  font-family:Georgia, "Times New Roman", serif;
+  font-size:48px;
+  line-height:.88;
+  letter-spacing:-.055em;
+  color:var(--hp-green);
+}
+
+.home-full-logo i{
+  font-style:normal;
+}
+
+.home-full-logo small{
+  grid-column:1/-1;
+  margin-top:7px;
+  font-size:13px;
+  line-height:1.1;
+  font-weight:850;
+  color:var(--hp-green);
+}
+
+@media(max-width:920px){
+  .header{
+    min-height:104px;
+  }
+  .brand .mark{
+    width:124px;
+  }
+  .brand b,
+  .brand i{
+    font-size:38px;
+  }
+  .brand small{
+    font-size:11px;
+  }
+}
+
+@media(max-width:760px){
+  .header{
+    min-height:88px;
+    height:auto;
+    padding:10px 18px;
+  }
+  .brand{
+    gap:10px;
+    min-width:0;
+  }
+  .brand .mark{
+    width:82px;
+    height:auto;
+  }
+  .brand span{
+    min-width:0;
+  }
+  .brand b,
+  .brand i{
+    font-size:30px;
+  }
+  .brand small{
+    display:block;
+    font-size:9.5px;
+    max-width:124px;
   }
 }
