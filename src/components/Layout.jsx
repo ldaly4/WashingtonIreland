@@ -19,11 +19,14 @@ const mobileLabel = {
 
 export function HouseMark() {
   return <span className="mark" aria-hidden="true">
-    <svg viewBox="0 0 64 64">
-      <path className="logo-house" d="M10 34V22.5c0-2.1.9-4 2.5-5.3L30.1 3.4c1.1-.9 2.7-.9 3.8 0l17.6 13.8c1.6 1.3 2.5 3.2 2.5 5.3V34M47 13V7h5v10"/>
-      <path className="logo-door" d="M27.3 29.5V20a4.7 4.7 0 0 1 9.4 0v8.4"/>
-      <circle className="logo-knob" cx="34.2" cy="24.5" r="1.2"/>
-      <path className="logo-path" d="M38.5 28.2c-11.5 2.2-21.1 5.4-25.7 9-4.8 3.8-1.8 7.8 5 9.7 5.8 1.7 15 1.9 25.5 1-9.4-2.4-15.3-5.2-15.5-8.6-.2-3.7 4.4-7.4 10.7-11.1Z"/>
+    <svg viewBox="0 0 180 116">
+      <circle className="logo-sun" cx="86" cy="35" r="28"/>
+      <path className="logo-hill logo-hill-back" d="M18 70c26-16 55-20 86-7 24 10 42 6 58-5"/>
+      <path className="logo-hill" d="M13 76c31-10 61-14 94-3 24 8 43 8 61 1"/>
+      <path className="logo-house" d="M93 65V38l27-17 22 15V22h20v30"/>
+      <path className="logo-door" d="M124 65V48a8 8 0 0 1 16 0v17"/>
+      <circle className="logo-knob" cx="135" cy="56" r="1.7"/>
+      <path className="logo-path" d="M95 78c-16 6-27 13-31 22h80c-19-6-32-13-49-22Z"/>
     </svg>
   </span>;
 }
@@ -38,7 +41,7 @@ export default function Layout({ path, navigate, children }) {
   const go = (event, href) => { event.preventDefault(); navigate(href); };
   return <div className="app-shell">
     <header className="header">
-      <a className="brand" href="#/" onClick={e => go(e, "/")}><HouseMark /><span><b>Home</b><i>Path</i></span></a>
+      <a className="brand" href="#/" onClick={e => go(e, "/")}><HouseMark /><span><b>Home</b><i>Path</i><small>making your path to housing easier</small></span></a>
       <a className={`header-learn ${path === "/learn" ? "active" : ""}`} href="#/learn" onClick={e => go(e, "/learn")}>Learning Centre</a>
       <nav className="desktop-nav" aria-label="Main navigation">
         {nav.map(([href, label]) => <a key={href} className={path === href ? "active" : ""} href={`#${href}`} onClick={e => go(e, href)}>{label}</a>)}

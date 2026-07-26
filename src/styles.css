@@ -1671,3 +1671,491 @@ main{background:transparent}
     display:none;
   }
 }
+
+/* HomePath warm illustrated brand direction */
+:root{
+  --hp-ink:#0f2d4d;
+  --hp-blue:#0f2d4d;
+  --hp-green:#2e5b3a;
+  --hp-sage:#7fa08a;
+  --hp-mint:#dfeede;
+  --hp-yellow:#f4c445;
+  --hp-coral:#ff6b6b;
+  --hp-sky:#6ec6ff;
+  --hp-cream:#fff6e6;
+  --hp-paper:#fffaf0;
+  --hp-line:#e8ddc9;
+  --hp-shadow:0 18px 45px rgba(15,45,77,.12);
+  --hp-soft-shadow:0 10px 28px rgba(15,45,77,.09);
+  --navy:#0f2d4d;
+  --green:#2e5b3a;
+  --pale:#dfeede;
+  --line:#e8ddc9;
+}
+
+body{
+  color:var(--hp-ink);
+  background:
+    radial-gradient(circle at 13% 13%, rgba(110,198,255,.18) 0 42px, transparent 44px),
+    radial-gradient(circle at 87% 8%, rgba(244,196,69,.14) 0 60px, transparent 62px),
+    linear-gradient(180deg,#fffaf0 0%,#fff6e6 52%,#f7efe1 100%);
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 18% 22%, rgba(255,255,255,.82) 0 38px, transparent 40px),
+    radial-gradient(ellipse at 22% 20%, rgba(255,255,255,.72) 0 24px, transparent 26px),
+    radial-gradient(ellipse at 76% 18%, rgba(255,255,255,.68) 0 48px, transparent 50px),
+    linear-gradient(transparent 78%, rgba(127,160,138,.18) 79%, rgba(127,160,138,.06) 100%);
+}
+
+.header{
+  height:96px;
+  background:rgba(255,250,240,.92);
+  border-bottom:1px solid rgba(15,45,77,.12);
+  box-shadow:0 10px 35px rgba(15,45,77,.06);
+  backdrop-filter:saturate(115%) blur(10px);
+}
+
+.brand{
+  gap:14px;
+  font-family:Georgia, "Times New Roman", serif;
+  color:var(--hp-green);
+}
+
+.brand span{
+  display:grid;
+  grid-template-columns:auto auto;
+  align-items:end;
+  gap:0;
+  padding:0;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+}
+
+.brand b,
+.brand i{
+  font-size:clamp(26px,3vw,38px);
+  line-height:.9;
+  letter-spacing:-.055em;
+  color:var(--hp-green);
+}
+
+.brand small{
+  grid-column:1/-1;
+  margin-top:3px;
+  font-family:Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.02em;
+  color:var(--hp-green);
+}
+
+.mark{
+  width:96px;
+  height:62px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  transform:none;
+}
+
+.mark svg{
+  width:100%;
+  height:100%;
+  fill:none;
+  stroke:none;
+}
+
+.logo-sun{fill:var(--hp-yellow)}
+.logo-hill-back{fill:none;stroke:var(--hp-sage);stroke-width:10;stroke-linecap:round}
+.logo-hill{fill:none;stroke:var(--hp-green);stroke-width:5;stroke-linecap:round}
+.logo-house{fill:none;stroke:var(--hp-green);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+.logo-door{fill:var(--hp-coral);stroke:var(--hp-green);stroke-width:4}
+.logo-knob{fill:var(--hp-yellow)}
+.logo-path{fill:rgba(127,160,138,.5);stroke:var(--hp-green);stroke-width:3}
+
+.desktop-nav a,
+.header-learn{
+  border:1px solid transparent;
+  border-radius:999px;
+  color:var(--hp-ink);
+  box-shadow:none;
+  font-weight:800;
+}
+
+.desktop-nav a:hover,
+.header-learn:hover{
+  background:#fff;
+  border-color:rgba(15,45,77,.12);
+  box-shadow:var(--hp-soft-shadow);
+  transform:translateY(-1px);
+}
+
+.desktop-nav a.active,
+.header-learn.active{
+  color:var(--hp-green);
+  background:var(--hp-mint);
+  border-color:rgba(46,91,58,.2);
+  box-shadow:none;
+}
+
+.hero{
+  max-width:1220px;
+  padding-top:64px;
+}
+
+.hero>div:first-child,
+.page-head,
+.form-card,
+.plain-card,
+.tower-section-card,
+.lesson-card,
+.teaching-card,
+.lesson-screen,
+.lesson-side,
+.guide-summary,
+.guide-step,
+.house-glance,
+.fit-card,
+.energy-card,
+.accordion,
+.costs-guide,
+.next-steps,
+.confidence-card,
+.home-personal,
+.disclaimer,
+.quote-grid blockquote{
+  border:1px solid rgba(15,45,77,.11);
+  border-radius:22px;
+  background:rgba(255,250,240,.88);
+  box-shadow:var(--hp-soft-shadow);
+}
+
+.hero>div:first-child{
+  overflow:hidden;
+}
+
+.hero>div:first-child:before{
+  content:"";
+  left:auto;
+  right:24px;
+  top:24px;
+  width:110px;
+  height:110px;
+  padding:0;
+  border:0;
+  border-radius:999px;
+  background:
+    linear-gradient(180deg, var(--hp-yellow) 0 50%, transparent 51%),
+    radial-gradient(circle at center, var(--hp-yellow) 0 48%, transparent 49%);
+  opacity:.9;
+}
+
+.hero h1,
+.page-head h1,
+.section-intro h2,
+.why h2,
+.section-heading h2,
+.action-card h3,
+.ask-drawer h2,
+.costs-head h2,
+.guide-step>button strong,
+.tower-section-card h2,
+.lesson-head h1{
+  font-family:Georgia, "Times New Roman", serif;
+  color:var(--hp-green);
+  letter-spacing:-.045em;
+}
+
+.hero h1:after{
+  width:92px;
+  height:4px;
+  border-radius:999px;
+  background:var(--hp-green);
+}
+
+.eyebrow{
+  color:var(--hp-ink)!important;
+  letter-spacing:.12em;
+}
+
+.hero-copy,
+.page-head>p:last-child,
+.action-card p,
+.plain-card p,
+.disclaimer p,
+.ask-drawer p{
+  color:#213a53;
+}
+
+.city-board,
+.tower-sky,
+.tower-plot,
+.house-3d-stage{
+  border:1px solid rgba(15,45,77,.1);
+  border-radius:26px;
+  background:
+    radial-gradient(circle at 78px 64px, var(--hp-yellow) 0 44px, transparent 45px),
+    linear-gradient(180deg,#e7f6ff 0%,#cfeeff 55%,#dfeede 56%,#dfeede 100%);
+  box-shadow:var(--hp-shadow);
+}
+
+.city-board:before{
+  content:"HomePath";
+  border:0;
+  background:#fffaf0;
+  border-radius:999px;
+  box-shadow:var(--hp-soft-shadow);
+  color:var(--hp-green);
+}
+
+.city-board:after{
+  border-top:0;
+  background:linear-gradient(180deg,rgba(127,160,138,.35),rgba(127,160,138,.12));
+}
+
+.city-block,
+.city-station,
+.metric,
+.glance-grid article,
+.plain-card,
+.repayment-cards article,
+.pathway-grid article,
+.why-costs article,
+.professional-grid article,
+.related-grid button,
+.cost-table,
+.money-grid,
+.question-list,
+.glossary-grid article,
+.worry-grid article,
+.scenario,
+.cost-list article,
+.people-grid article,
+.number-card,
+.verified-support-data,
+.lesson-recommendation-grid article,
+.house-access-panel,
+.visual-test-controls{
+  border:1px solid rgba(15,45,77,.12);
+  border-radius:18px;
+  box-shadow:var(--hp-soft-shadow);
+}
+
+.actions{
+  background:
+    linear-gradient(180deg,rgba(46,91,58,.98),rgba(15,45,77,.95)),
+    var(--hp-green);
+  color:#fff;
+}
+
+.actions:before{
+  height:90px;
+  top:auto;
+  bottom:0;
+  left:0;
+  right:0;
+  border:0;
+  background:
+    radial-gradient(ellipse at 12% 100%, rgba(127,160,138,.7) 0 90px, transparent 92px),
+    radial-gradient(ellipse at 48% 100%, rgba(127,160,138,.5) 0 120px, transparent 122px),
+    radial-gradient(ellipse at 86% 100%, rgba(127,160,138,.55) 0 95px, transparent 97px);
+}
+
+.action-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+
+.action-card{
+  min-height:260px;
+  border:0;
+  border-radius:24px;
+  background:linear-gradient(180deg,#fffaf0,#fff4df);
+  color:var(--hp-ink);
+  box-shadow:0 18px 40px rgba(15,45,77,.14);
+  transform:none;
+}
+
+.action-card:before{
+  content:"";
+  width:62px;
+  height:94px;
+  top:22px;
+  right:22px;
+  border:0;
+  border-radius:999px 999px 8px 8px;
+  background:
+    radial-gradient(circle at 47px 56px,#fff 0 3px,transparent 4px),
+    linear-gradient(180deg,var(--hp-blue),#073b66);
+  box-shadow:inset 0 0 0 5px #f2dcc0, 0 7px 0 rgba(15,45,77,.1);
+}
+
+.action-card:nth-child(2):before{background:radial-gradient(circle at 47px 56px,#fff 0 3px,transparent 4px),linear-gradient(180deg,var(--hp-green),#1f5133)}
+.action-card:nth-child(3):before{background:radial-gradient(circle at 47px 56px,#fff 0 3px,transparent 4px),linear-gradient(180deg,var(--hp-coral),#d94c48)}
+.action-card:after{display:none}
+
+.action-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 24px 50px rgba(15,45,77,.18);
+}
+
+.action-card button,
+.primary,
+.guide-inline-button,
+.home-quick-links button,
+.related-grid button,
+.glossary-grid button,
+.ask-tools button,
+.ask-feedback button,
+.mode-tabs button,
+.tabs button,
+.lesson-recommendation-grid button{
+  border:1px solid rgba(15,45,77,.12);
+  border-radius:999px;
+  box-shadow:none;
+}
+
+.primary,
+.guide-inline-button,
+.action-card button,
+.lesson-recommendation-grid button{
+  background:var(--hp-green);
+  color:#fff;
+}
+
+.primary:hover,
+.guide-inline-button:hover,
+.action-card button:hover,
+.home-quick-links button:hover,
+.related-grid button:hover,
+.mode-tabs button:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--hp-soft-shadow);
+}
+
+.home-quick-links{
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:24px;
+  background:rgba(255,255,255,.08);
+}
+
+.home-quick-links button{
+  background:#fffaf0;
+  color:var(--hp-ink);
+}
+
+.field input,
+.field select,
+.field textarea,
+.money-input,
+.ask-input textarea,
+.ask-drawer select{
+  border:1px solid rgba(15,45,77,.16);
+  border-radius:14px;
+  background:#fffdf8;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+.money-input:focus-within,
+.ask-input textarea:focus{
+  border-color:var(--hp-sky);
+  box-shadow:0 0 0 4px rgba(110,198,255,.25);
+}
+
+.form-progress,
+.section-heading>span{
+  border:0;
+  border-radius:999px;
+  background:var(--hp-yellow);
+  color:var(--hp-ink);
+  box-shadow:none;
+}
+
+.range-panel,
+.house-glance{
+  border:0;
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 85% 16%, rgba(244,196,69,.28) 0 70px, transparent 72px),
+    linear-gradient(135deg,var(--hp-blue),#123f68);
+  box-shadow:var(--hp-shadow);
+}
+
+.metric,
+.glance-grid article{
+  background:#fffaf0;
+  color:var(--hp-ink);
+}
+
+.metric.accent,
+.glance-grid article.accent{
+  background:var(--hp-green);
+}
+
+.bottom-nav{
+  background:#fffaf0;
+  border-top:1px solid rgba(15,45,77,.12);
+  box-shadow:0 -12px 28px rgba(15,45,77,.08);
+}
+
+.bottom-nav a,
+.bottom-nav button{
+  border-right:0;
+  color:var(--hp-ink);
+  background:transparent;
+}
+
+.bottom-nav a.active,
+.bottom-nav button.active{
+  color:var(--hp-green);
+  background:var(--hp-mint);
+}
+
+.ask-fab{
+  border:0;
+  border-radius:999px;
+  background:var(--hp-coral);
+  box-shadow:0 12px 30px rgba(255,107,107,.3);
+}
+
+.ask-drawer{
+  background:#fffaf0;
+  border-left:1px solid rgba(15,45,77,.12);
+  box-shadow:-24px 0 60px rgba(15,45,77,.18);
+}
+
+.house-illustration,
+.house-3d-stage{
+  background:#e7f6ff;
+}
+
+@media(max-width:760px){
+  .header{
+    height:78px;
+  }
+  .mark{
+    width:70px;
+    height:48px;
+  }
+  .brand small{
+    display:none;
+  }
+  .brand b,
+  .brand i{
+    font-size:29px;
+  }
+  .action-grid{
+    grid-template-columns:1fr;
+  }
+}
